@@ -1,0 +1,11 @@
+Package: mcmc3r
+Type: Package
+Title: Tools to work with MCMCTree
+Version: 0.1
+Date: 2017-05-18
+Author: Mario dos Reis
+Maintainer: Mario dos Reis <mariodosreis@gmail.com>
+Description: Tools to work with MCMCTree, a program for Bayesian inference of species divergence times.
+License: MIT
+LazyData: TRUE
+RoxygenNote: 5.0.1
