@@ -57,8 +57,8 @@ make.bfctlf <- function(beta, ctlf="mcmctree.ctl", betaf="beta.txt") {
 #' 
 #' \deqn{\beta_{i}=\left(\frac{i-1}{n}\right)^{a}.}
 #' 
-#' Values for \code{a} between 5 to 8 appear appropriate. Large \code{a} values
-#' produce beta values more skewed towards zero.
+#' Values of \code{a} between 5 to 8 appear appropriate. Large \code{a} values
+#' produce beta values close to zero.
 #' 
 #' If \code{method = "gauss-quad"}, the beta values are calculated according to
 #' the \code{n} Gauss-Legendre quadrature rule (see Rannala and Yang, 2017).

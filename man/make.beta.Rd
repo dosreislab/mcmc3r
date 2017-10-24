@@ -23,7 +23,7 @@ formula
 
 \deqn{\beta_{i}=\left(\frac{i-1}{n}\right)^{a}.}
 
-Values for \code{a} between 5 to 8 appear appropriate. Large \code{a} values
+Values of \code{a} between 5 to 8 appear appropriate. Large \code{a} values
 produce beta values more skewed towards zero.
 
 If \code{method = "gauss-quad"}, the beta values are calculated according to
