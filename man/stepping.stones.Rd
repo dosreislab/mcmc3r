@@ -4,19 +4,18 @@
 \alias{stepping.stones}
 \title{Estimate marginal likelihood by stepping stones}
 \usage{
-stepping.stones(mcmcf = "mcmc.txt", betaf = "beta.txt", se = TRUE)
+stepping.stones(mcmcf = "mcmc.txt", betaf = "beta.txt")
 }
 \arguments{
 \item{mcmcf}{character, mcmc output file name}
 
 \item{betaf}{character, file with beta values}
-
-\item{se}{logical, whether to return the standard error of the estimate}
 }
 \value{
-If \code{se = TRUE}, a numeric vector of size two with the log-marginal
-likelihood estimate and the S.E of the estimate. Otherwise just the log-marginal
-likelihood.
+A list with components \code{logml}, the log-marginal likelihood estimate; 
+\code{se}, the standard error of the estimate; \code{mean.logl}, the mean of
+log-likelihood values sampled for each beta; and \code{b}, the beta values
+used.
 }
 \description{
 Estimate the marginal likelihood using the stepping stones

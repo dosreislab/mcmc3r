@@ -4,10 +4,12 @@
 \alias{make.beta}
 \title{Make beta values for marginal likelihood calculation}
 \usage{
-make.beta(n, a = 5, method = c("step-stones", "gauss-quad"))
+make.beta(n, method = c("step-stones", "gauss-quad"), a = 5)
 }
 \arguments{
 \item{n}{numeric, number of beta points}
+
+\item{method}{character, the method to choose the beta points, see details}
 
 \item{a}{numeric, exponent for stepping stones beta generation, see details}
 }
@@ -24,7 +26,7 @@ formula
 \deqn{\beta_{i}=\left(\frac{i-1}{n}\right)^{a}.}
 
 Values of \code{a} between 5 to 8 appear appropriate. Large \code{a} values
-produce beta values more skewed towards zero.
+produce beta values close to zero.
 
 If \code{method = "gauss-quad"}, the beta values are calculated according to
 the \code{n} Gauss-Legendre quadrature rule (see Rannala and Yang, 2017).

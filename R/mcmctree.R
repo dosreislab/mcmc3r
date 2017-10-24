@@ -49,6 +49,7 @@ make.bfctlf <- function(beta, ctlf="mcmctree.ctl", betaf="beta.txt") {
 #' Make appropriate beta values
 #' 
 #' @param n numeric, number of beta points
+#' @param method character, the method to choose the beta points, see details
 #' @param a numeric, exponent for stepping stones beta generation, see details
 #' 
 #' @details 
@@ -76,7 +77,7 @@ make.bfctlf <- function(beta, ctlf="mcmctree.ctl", betaf="beta.txt") {
 #' the multispecies coalescent. \emph{Systematic Biology}, 66: 823--842.
 #' 
 #' @export
-make.beta <- function(n, a=5, method=c("step-stones", "gauss-quad")) {
+make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
   method <- match.arg(method)
   if (method == "step-stones")
     b <- .stepping.stones.beta(n, a)
@@ -94,7 +95,6 @@ make.beta <- function(n, a=5, method=c("step-stones", "gauss-quad")) {
 #' 
 #' @param mcmcf character, mcmc output file name
 #' @param betaf character, file with beta values
-#' @param se logical, whether to return the standard error of the estimate
 #' 
 #' @details 
 #' The MCMC samples should be stored in a directory structure created
@@ -104,9 +104,10 @@ make.beta <- function(n, a=5, method=c("step-stones", "gauss-quad")) {
 #' also given (this requires the \code{coda} package).
 #' 
 #' @return 
-#' If \code{se = TRUE}, a numeric vector of size two with the log-marginal
-#' likelihood estimate and the S.E of the estimate. Otherwise just the log-marginal
-#' likelihood.
+#' A list with components \code{logml}, the log-marginal likelihood estimate; 
+#' \code{se}, the standard error of the estimate; \code{mean.logl}, the mean of
+#' log-likelihood values sampled for each beta; and \code{b}, the beta values
+#' used.
 #' 
 #' @seealso 
 #' \code{\link{make.bfctlf}} to prepare directories and mcmctree control files
@@ -115,34 +116,32 @@ make.beta <- function(n, a=5, method=c("step-stones", "gauss-quad")) {
 #' @author Mario dos Reis
 #' 
 #' @export
-stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
+stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   b <- c(scan(betaf), 1)
   n <- length(b) - 1
   lnLs <- list()
   Ls <- list()
-  C <- zr <- ess <- vzr <- numeric(n)
-  zr <- numeric(n)
+  C <- zr <- ess <- vzr <- mlnl <- numeric(n)
   bdiff <- diff(b)
   
   for (i in 1:n) {
     lnLs[[i]] <- read.table(paste(i, "/", mcmcf, sep=""), header=TRUE)$lnL
+    mlnl[i] <- mean(lnLs[[i]])
     lnLs[[i]] <- bdiff[i] * lnLs[[i]]
     C[i] <- max(lnLs[[i]])
     Ls[[i]] <- exp(lnLs[[i]] - C[i])
     zr[i] <- mean(Ls[[i]])
   }
     
-  if (se) {
-    for (i in 1:n) {
-      ess[i] <- coda::effectiveSize(Ls[[i]])
-      vzr[i] <- var(Ls[[i]]) / ess[i]
-    }
-    vmlnl <- sum(vzr / zr^2)
+
+  for (i in 1:n) {
+    ess[i] <- coda::effectiveSize(Ls[[i]])
+    vzr[i] <- var(Ls[[i]]) / ess[i]
   }
+  vmlnl <- sum(vzr / zr^2)
   
-  mlnl <- sum(log(zr) + C)
-  if (se) return (c(mlnl, sqrt(vmlnl)))
-  return (mlnl)
+  lnml <- sum(log(zr) + C)
+  return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b[1:n]) )
 }
 
 #' Estimate marginal likelihood by thermodynamic integration
@@ -154,7 +153,6 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
 #' 
 #' @param mcmcf character, mcmc output file name
 #' @param betaf character, file with beta values
-#' @param se logical, whether to return the standard error of the estimate
 #' 
 #' @details
 #' The MCMC samples should be stored in a directory structure created
@@ -167,9 +165,10 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
 #' and Yang (2017) for details (also dos Reis et al. 2017, Appendix 2).
 #' 
 #' @return 
-#' If \code{se = TRUE}, a numeric vector of size two with the log-marginal
-#' likelihood estimate and the S.E of the estimate. Otherwise just the log-marginal
-#' likelihood.
+#' A list with components \code{logml}, the log-marginal likelihood estimate; 
+#' \code{se}, the standard error of the estimate; \code{mean.logl}, the mean of
+#' log-likelihood values sampled for each beta; and \code{b}, the beta values
+#' used.
 #' 
 #' @references 
 #' Rannala B and Yang Z. (2017) Efficient Bayesian species tree inference under 
@@ -186,7 +185,7 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
 #' @author Mario dos Reis
 #' 
 #' @export
-gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
+gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   b <- scan(betaf)
   n <- length(b)
   lnLs <- list()
@@ -197,18 +196,17 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
     lnLs[[i]] <- read.table(paste(i, "/", mcmcf, sep=""), header=TRUE)$lnL
   }
   
-  mlnl <- sum( sapply(lnLs, mean) * w / 2 )
+  mlnl <- sapply(lnLs, mean)
+  lnml <- sum( mlnl * w / 2 )
   
-  if (se) {
-    for (i in 1:n) {
-      ess[i] <- coda::effectiveSize(lnLs[[i]])
-      vv[i] <- var(lnLs[[i]]) / ess[i]
-    }
-    vmlnl <- sum(w^2 * vv) / 4
+  
+  for (i in 1:n) {
+    ess[i] <- coda::effectiveSize(lnLs[[i]])
+    vv[i] <- var(lnLs[[i]]) / ess[i]
   }
+  vmlnl <- sum(w^2 * vv) / 4
   
-  if (se) return ( c(mlnl, sqrt(vmlnl)) )
-  return (mlnl)
+  return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b) )
 }
 
 # gauss-laguerre beta generator function
