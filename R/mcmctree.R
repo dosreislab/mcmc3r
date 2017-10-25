@@ -209,6 +209,34 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b) )
 }
 
+#' Calculate Bayes factors and posterior model probabilities
+#' 
+#' @param ... list of marginal likelihood objects, see details
+#' 
+#' @details 
+#' Input is a list of marginal likelihood objects, with each object generated
+#'  by either \code{stepping.stones()} or \code{gauss.quad()}.
+#' 
+#' @return 
+#' A list with elements \code{bf}, the Bayes factors; and \code{pr}, the 
+#' posterior model probabilities.
+#' 
+#' @author Mario dos Reis
+#' 
+#' @export
+bayes.factors <- function(...) {
+  model <- list(...)
+  n <- length(model)
+  logml <- numeric(n)
+  
+  for (i in 1:n) logml[i] <- model[[i]]$logml
+  
+  bf <- exp(logml - max(logml))
+  pr <- bf / sum(bf)
+  
+  return ( list(bf=bf, pr=pr) )
+}
+
 # gauss-laguerre beta generator function
 .gauss.quad.beta <- function(n) { 
   x <- -glqrules[[n]]$x # reverse the x's
