@@ -165,7 +165,7 @@ with
 
 \end_inset
 
-and 
+(this comes from the Delta method), and 
 \begin_inset Formula 
 \[
 \mathrm{var}(\bar{z}_{i})=\mathrm{var}\left(\exp x_{j}\right)/\mathrm{ESS}(x_{j}),
@@ -185,10 +185,10 @@ The necessary
 \begin_inset Formula $\beta$
 \end_inset
 
- values can be obtained as
+ values can be obtained from
 \begin_inset Formula 
 \[
-\beta_{i}=\left(\frac{i-1}{n}\right)^{a}
+\beta_{i}=\left(\frac{i-1}{n}\right)^{a}.
 \]
 
 \end_inset
