@@ -100,14 +100,21 @@ make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
 #' The MCMC samples should be stored in a directory structure created
 #' by \code{make.bfctlf} with \code{method = "step-stones"}. The function will
 #' read the stored log-likelihood values and calculate the log-marginal 
-#' likelihood. If \code{se = TRUE}, then the standard error of the estimated is
-#' also given (this requires the \code{coda} package).
+#' likelihood. 
+#' 
+#' An approximation based on the Delta method is used to calculate the standard 
+#' error (see Xie et al. 2011). Warnings are given if the approximation appears 
+#' unreliable.
 #' 
 #' @return 
 #' A list with components \code{logml}, the log-marginal likelihood estimate; 
 #' \code{se}, the standard error of the estimate; \code{mean.logl}, the mean of
 #' log-likelihood values sampled for each beta; and \code{b}, the beta values
 #' used.
+#' 
+#' @references 
+#' Xie et al. (2011) Improving marginal likelihood estimation for Bayesian 
+#' phylogenetic model selection. \emph{Systematic Biology}, 60: 150--160.
 #' 
 #' @seealso 
 #' \code{\link{make.bfctlf}} to prepare directories and mcmctree control files
@@ -132,13 +139,14 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
     Ls[[i]] <- exp(lnLs[[i]] - C[i])
     zr[i] <- mean(Ls[[i]])
   }
-    
 
   for (i in 1:n) {
     ess[i] <- coda::effectiveSize(Ls[[i]])
     vzr[i] <- var(Ls[[i]]) / ess[i]
+    if (vzr[i] / zr[i]^2 > 0.1) 
+      warning ("unreliable se: var(r_k)/r_k^2 = ", vzr[i] / zr[i]^2, " for b = ", b[i])
   }
-  vmlnl <- sum(vzr / zr^2)
+  vmlnl <- sum(vzr / zr^2)  # the delta approximation does not work well if vzr/zr^2 > 0.1
   
   lnml <- sum(log(zr) + C)
   return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b[1:n]) )
@@ -158,8 +166,7 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
 #' The MCMC samples should be stored in a directory structure created
 #' by \code{make.bfctlf} with \code{method = "gauss-quad"}. The function 
 #' will read the stored log-likelihood values and calculate the log-marginal 
-#' likelihood. If \code{se = TRUE}, then the standard error of the estimated 
-#' is also given (this requires the \code{coda} package). 
+#' likelihood.
 #' 
 #' Numerical integration is done using Gauss-Legendre quadrature. See Rannala
 #' and Yang (2017) for details (also dos Reis et al. 2017, Appendix 2).
@@ -290,3 +297,4 @@ bayes.factors <- function(...) {
 #'   sbf <- sum(bf)
 #'   return(list(BF=bf, Pr=bf/sbf))
 #' }
+# a = 10; x = rgamma(1e4, a, 1); y = log(x); var(y) / (a / a^2); (a / a^2)

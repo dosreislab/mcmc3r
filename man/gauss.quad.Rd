@@ -26,8 +26,7 @@ with mcmctree (or bpp).
 The MCMC samples should be stored in a directory structure created
 by \code{make.bfctlf} with \code{method = "gauss-quad"}. The function 
 will read the stored log-likelihood values and calculate the log-marginal 
-likelihood. If \code{se = TRUE}, then the standard error of the estimated 
-is also given (this requires the \code{coda} package). 
+likelihood.
 
 Numerical integration is done using Gauss-Legendre quadrature. See Rannala
 and Yang (2017) for details (also dos Reis et al. 2017, Appendix 2).

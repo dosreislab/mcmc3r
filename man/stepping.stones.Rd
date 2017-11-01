@@ -26,8 +26,15 @@ with mcmctree (or bpp).
 The MCMC samples should be stored in a directory structure created
 by \code{make.bfctlf} with \code{method = "step-stones"}. The function will
 read the stored log-likelihood values and calculate the log-marginal 
-likelihood. If \code{se = TRUE}, then the standard error of the estimated is
-also given (this requires the \code{coda} package).
+likelihood. 
+
+An approximation based on the Delta method is used to calculate the standard 
+error (see Xie et al. 2011). Warnings are given if the approximation appears 
+unreliable.
+}
+\references{
+Xie et al. (2011) Improving marginal likelihood estimation for Bayesian 
+phylogenetic model selection. \emph{Systematic Biology}, 60: 150--160.
 }
 \seealso{
 \code{\link{make.bfctlf}} to prepare directories and mcmctree control files
