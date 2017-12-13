@@ -18,17 +18,31 @@ Each landmark can be given in 2D or 3D. For instance,
 if the landmarks are 3D, the first 3 columns will be the
 coordinates x, y, and z for the first landmark, the next 3
 columns for the second landmark, and so on.
+\tabular{cccccccc}{
+ specimens \tab lmk1.x \tab lmk1.y  \tab lmk1.z  \tab lmk2.x \tab lmk2.y \tab lmk2.z  \tab ... \cr
+ Sp_1      \tab 0.143  \tab -0.028  \tab -0.044  \tab 0.129  \tab 0.028  \tab -0.043  \tab ... \cr
+ Sp_2      \tab 0.128  \tab -0.024  \tab -0.028  \tab 0.124  \tab 0.027  \tab -0.025  \tab ... \cr
+ ...       \tab ...    \tab ...     \tab ...     \tab ...    \tab ...    \tab ...     \tab ...
+}
+
+See \code{canids19x29.matrix} in the \code{data} directory for a
+more detailed example of the format of the object that is returned.
 
 Note that if the 'n' dimension (specimens) of the array provided does
-not have names, #' the specimens in the returned matrix will be
-labelled as \"1\", \"2\", and so on.
+not have names, the specimens in the returned matrix will be
+labelled as '1', '2', and so on.
 }
 \description{
 Convert a 3D array with landmark points into an object of class matrix.
 }
 \details{
-See \code{canids19x29.array} in the \code{data} directory for an example
-of the format of a 3D array.
+The object \code{proc}, class array, has format p x k x n, where 'p' is
+the number of landmarks, 'k' the number of coordinates, and 'n' the number
+of specimens. See \code{canids19x29.array} in the \code{data} directory for an
+example of the format of a 3D array.
+}
+\seealso{
+\code{\link{matrix2array}}, \code{\link{write_morpho}}
 }
 \author{
 Sandra Alvarez-Carretero
