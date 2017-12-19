@@ -28,7 +28,7 @@
 #' correlation matrix R, \code{eigen} or \code{chol} (see details).
 #' Requires \code{popvar} and \code{R}.
 #'
-#' @param ... Further arguments passed to \code{write_morpho()} (see details).
+#' @param ... Further arguments passed to \code{write.morpho()} (see details).
 #'
 #' @details
 #'
@@ -75,15 +75,15 @@
 #' If \code{method = "chol"}, the inverse of \code{R} will be decomposed
 #' following the Cholesky decomposition (see \code{chol}).
 #'
-#' There are three further parameters you can pass to \code{write_morpho} through
+#' There are three further parameters you can pass to \code{write.morpho} through
 #' \code{ ... }: \code{R.sh}, a shrunk matrix, \code{scaled}, a logical value
 #' indicating if the object \code{proc} has been already scaled, and a numeric value
 #' for the maximum age, which is always 1.
-#' These arguments are used within the function \code{\link{simulate_morpho}}
+#' These arguments are used within the function \code{\link{simul.morpho}}
 #' and are not thought to be called by the user.
 #'
 #' @seealso
-#' \code{\link{matrix2array}}, \code{\link{array2matrix}}, \code{\link{simulate_morpho}}
+#' \code{\link{matrix2array}}, \code{\link{array2matrix}}, \code{\link{simul.morpho}}
 #'
 #' @author Sandra Alvarez-Carretero
 #'
@@ -91,13 +91,13 @@
 #' # A.1) Providing only the morphological alignment (proc) after the
 #' #      Procrustes analysis (PA) in an object of class \"array\".
 #'
-#'        write_morpho( filename = "seqfile.aln", proc = canids19x29.array,
+#'        write.morpho( filename = "seqfile.aln", proc = canids19x29.array,
 #'                      coords = 3 )
 #'
 #' # A.2) Providing only the morphological alignment (proc) after the
 #' #      Procrustes analysis (PA) in an object of class \"matrix\".
 #'
-#'        write_morpho( filename = "seqfile.aln", proc = canids19x29.matrix )
+#'        write.morpho( filename = "seqfile.aln", proc = canids19x29.matrix )
 #'
 #' # B) Providing the morphological alignment (proc) after the
 #' #    PA in an object of class \"array\" and a list with the
@@ -110,7 +110,7 @@
 #'                     sp17 = "Par_her", sp18 = "Tha_won", sp19 = "Smi_fat"
 #'                   )
 #'
-#'      write_morpho( filename = "seqfile.aln", proc = canids19x29.array,
+#'      write.morpho( filename = "seqfile.aln", proc = canids19x29.array,
 #'                    coords = 3, names = names )
 #'
 #' # C) Providing the morphological alignment (proc) after the
@@ -131,14 +131,14 @@
 #'                    sp17 =  0,    sp18 =  0,    sp19 =  0
 #'                   )
 #'
-#'      write_morpho( filename = "seqfile.aln", proc = canids19x29.array,
+#'      write.morpho( filename = "seqfile.aln", proc = canids19x29.array,
 #'                    coords = 3, names = names, ages = ages )
 #'
 #' # D) Providing an object of class \"array\" after having
 #' #    carried out a PA. As an example, we use the function
 #' #    geomorph::gpagen, but you can use your preferred
 #' #    function meanwhile the format of the \"proc\" object
-#' #    (class array) for write_morpho is
+#' #    (class array) for write.morpho is
 #' #    "p landmarks x k coordinates x n species"
 #'
 #'      df <- canids19x29.raw
@@ -161,14 +161,14 @@
 #'
 #'      class( ma.paln$coords )
 #'
-#'      # Run write_morpho
+#'      # Run write.morpho
 #'
-#'      write_morpho( filename = "seqfile.aln", proc = ma.paln$coords, coords = 3 )
+#'      write.morpho( filename = "seqfile.aln", proc = ma.paln$coords, coords = 3 )
 #'
 #' # E) Providing the morphological alignment (proc) after the
 #' #    PA in an object of class \"matrix\" and population variance
 #'
-#'      write_morpho( filename = "seqfile.aln", proc = canids19x29.array,
+#'      write.morpho( filename = "seqfile.aln", proc = canids19x29.array,
 #'                    coords = 3, popvar = var.fx )
 #'
 #' # F) Providing the morphological alignment (proc) after the
@@ -176,7 +176,7 @@
 #' #    and the correlation matrix (choosing the Cholesky
 #' #    decomposition)
 #'
-#'      write_morpho( filename = "seqfile.aln", proc = canids19x29.array,
+#'      write.morpho( filename = "seqfile.aln", proc = canids19x29.array,
 #'                    coords = 3, popvar = var.fx, R = R, method = "chol" )
 #'
 #'
@@ -184,7 +184,7 @@
 #'
 #' @export
 
-write_morpho <- function( filename, proc, coords = c( 2, 3 ), names = NULL, ages = NULL,
+write.morpho <- function( filename, proc, coords = c( 2, 3 ), names = NULL, ages = NULL,
                           popvar = NULL, R = NULL, method = c( "eigen", "chol" ), ... ) {
 
   #\\ Check a name for the output file has been given
@@ -570,7 +570,7 @@ write_morpho <- function( filename, proc, coords = c( 2, 3 ), names = NULL, ages
 #' the format of the object that is returned.
 #'
 #' @seealso
-#' \code{\link{array2matrix}}, \code{\link{write_morpho}}
+#' \code{\link{array2matrix}}, \code{\link{write.morpho}}
 #'
 #' @author Sandra Alvarez-Carretero
 #'
@@ -698,7 +698,7 @@ matrix2array <- function( proc, coords = c( 2, 3 ) ){
 #' labelled as '1', '2', and so on.
 #'
 #' @seealso
-#' \code{\link{matrix2array}}, \code{\link{write_morpho}}
+#' \code{\link{matrix2array}}, \code{\link{write.morpho}}
 #'
 #' @author Sandra Alvarez-Carretero
 #'
@@ -804,13 +804,13 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' or \code{rho} (see details).
 #'
 #' @param out (Optional) character, name for the output file with the
-#' simulated data in phylip format (see details and \code{\link{write_morpho}}).
+#' simulated data in phylip format (see details and \code{\link{write.morpho}}).
 #'
 #' @param names (Optional) list, species name included in the
-#' morphological alignment (see examples in \code{\link{write_morpho}}).
+#' morphological alignment (see examples in \code{\link{write.morpho}}).
 #'
 #' @param ages (Optional) list, ages of the species included in
-#' the morpholical alignment (see examples in \code{\link{write_morpho}}).
+#' the morpholical alignment (see examples in \code{\link{write.morpho}}).
 #'
 #' @param ... Further arguments passed to \code{\link[ape]{rTraitCont}}.
 #'
@@ -820,10 +820,10 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' can take different parameters to adjust the simulation
 #' (e.g. the model, the rate drift, etc.).
 #' These parameters are the ones the user can pass through
-#' \code{simulate_morpho()}.
-#' The default values that \code{simulate_morpho()} uses are
+#' \code{simul.morpho()}.
+#' The default values that \code{simul.morpho()} uses are
 #' \code{model = "BM"}, \code{sigma = 1}, \code{ancestor = F},
-#' and \code{root.value = 0}. Currently, \code{simulate_morpho}
+#' and \code{root.value = 0}. Currently, \code{simul.morpho}
 #' supports only \code{ancestor = F}, so do not change this logical
 #' value or the function will not work. See \code{\link[ape]{rTraitCont}}
 #' for more details on this function.
@@ -871,9 +871,9 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' correlation is considered. Therefore, each scaled simulated matrix with
 #' continuous traits, \code{M.s_i}, needs to be transformed in order
 #' to account for this correlation.
-#' Specifically, \code{simulate_morpho} estimates the shrunk correlation
+#' Specifically, \code{simul.morpho} estimates the shrunk correlation
 #' matrix for each replciate, \code{R.sh_i}, with the function
-#' \code{\link[corpcor]{cor.shrink}}. Later, it decomposes the inverse
+#' \code{\link[corpcor]{cov.shrink}}. Later, it decomposes the inverse
 #' of \code{R.sh_i} either using the Cholesky decomposition
 #' (if \code{method = "chol"}, see default usage at \code{\link[base]{chol}})
 #' or the eigendecomposition (if \code{method = "eigen"}, see default
@@ -941,13 +941,13 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #'   \item{R.sh}{  List with \eqn{i} matrices \code{p x p}, where \code{p}
 #'   is the amount of simulated continuous traits. These matrices are the
 #'   estimated shrunk correlation matrices computed for each replicate
-#'   with the function \code{\link[corpcor]{cor.shrink}}}
+#'   with the function \code{\link[corpcor]{cov.shrink}}}
 #'   \item{Z}{  List of \eqn{i} matrices \code{s x p}, matrices with the
 #'   transformed data calculated as \eqn{\mathrm{Z_{i}}=\mathrm{M.s_{i}}\times
 #'   \mathrm{A_{i}^{T}}}{Z_i = M.s_i t(A_i)}}
 #'
 #' @seealso
-#' \code{\link{write_morpho}}
+#' \code{\link{write.morpho}}
 #'
 #' @author Sandra Alvarez-Carretero
 #'
@@ -955,24 +955,24 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # A) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance and correlation are not considered.
 #' #
 #' #    Number of replicates: 2.
 #'
-#'      morpho::simulate_morpho( tree = tree, mtraits = 87, reps = 2 )
+#'      morpho::simul.morpho( tree = tree, mtraits = 87, reps = 2 )
 #'
 #'
 #' # B) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', but with different parameters
-#' #    than the default ones in 'simulate_morpho' to run
+#' #    than the default ones in 'simul.morpho' to run
 #' #    'rTraitCont'. Population variance and correlation are not
 #' #    considered.
 #' #
 #' #    Number of replicates: 2.
 #'
-#'      morpho::simulate_morpho( tree  = tree, mtraits = 87, reps  = 2,
+#'      morpho::simul.morpho( tree  = tree, mtraits = 87, reps  = 2,
 #'                               model = "OU", root    = 1,  sigma = 0.2,
 #'                               alpha = 2
 #'                              )
@@ -981,14 +981,14 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # C) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance is c = 0.2 and the within population from
 #' #    where to sample has 'psample' = 5 individuals.
 #' #    Correlation is not considered.
 #' #
 #' #    Number of replicates: 2.
 #'
-#'      morpho::simulate_morpho( tree = tree, mtraits = 87, reps = 2,
+#'      morpho::simul.morpho( tree = tree, mtraits = 87, reps = 2,
 #'                               c    = 0.2,  psample = 5
 #'                              )
 #'
@@ -996,7 +996,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # D) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance is c = 0.2 and the within population from
 #' #    where to sample has 'psample' = 5 individuals.
 #' #    A correlation matrix is provided, so once it is shrunk, it can
@@ -1005,7 +1005,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' #    Number of replicates: 2.
 #'
 #'
-#'      morpho::simulate_morpho( tree   = tree, mtraits = 87, reps = 2,
+#'      morpho::simul.morpho( tree   = tree, mtraits = 87, reps = 2,
 #'                               c      = 0.2,  psample = 5,  R    = R,
 #'                               method = "chol"
 #'                              )
@@ -1014,7 +1014,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # E) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance is c = 0.2 and the within population from
 #' #    where to sample has 'psample' = 5 individuals.
 #' #    A correlation matrix is provided, so once it is shrunk, it can
@@ -1022,7 +1022,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' #
 #' #    Number of replicates: 2.
 #'
-#'      morpho::simulate_morpho( tree   = tree, mtraits = 87, reps = 2,
+#'      morpho::simul.morpho( tree   = tree, mtraits = 87, reps = 2,
 #'                               c      = 0.2,  psample = 5,  R    = R,
 #'                               method = "eigen"
 #'                              )
@@ -1031,7 +1031,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # F) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance is c = 0.2 and the within population from
 #' #    where to sample has 'psample' = 5 individuals.
 #' #    The rho parameter, 'rho' = 0.5, is provided so a correlation
@@ -1041,7 +1041,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' #
 #' #    Number of replicates: 2.
 #'
-#'      morpho::simulate_morpho( tree   = tree, mtraits = 87, reps = 2,
+#'      morpho::simul.morpho( tree   = tree, mtraits = 87, reps = 2,
 #'                               c      = 0.2,  psample = 5,  rho  = 0.5,
 #'                               method = "chol"
 #'                              )
@@ -1050,7 +1050,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #' # G) Simulation setup: Simulate a morphological alignment
 #' #    with 'mtraits' = 87 continuous characters that follows a
 #' #    fixed tree, object 'tree', with the default parameters in
-#' #    'simulate_morpho' to run 'rTraitCont'.
+#' #    'simul.morpho' to run 'rTraitCont'.
 #' #    Population variance is c = 0.2 and the within population from
 #' #    where to sample has 'psample' = 5 individuals.
 #' #    The rho parameter, 'rho' = 0.5, is provided so a correlation
@@ -1071,7 +1071,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #'                    sp5 = 0.7, sp6 = 0, sp7 = 0.3, sp8 = 0
 #'                   )
 #'
-#'      morpho::simulate_morpho( tree   = tree,   mtraits = 87,   reps = 2,
+#'      morpho::simul.morpho( tree   = tree,   mtraits = 87,   reps = 2,
 #'                               c      = 0.2,    psample = 5,    rho  = 0.5,
 #'                               method = "chol", names   = names,
 #'                               ages   = ages
@@ -1079,7 +1079,7 @@ array2matrix <- function( proc, coords = c( 2, 3 ) ){
 #'
 #' @export
 
-simulate_morpho <- function( tree, mtraits, reps, c = NULL,
+simul.morpho <- function( tree, mtraits, reps, c = NULL,
                              rho = NULL, R = NULL, psample = NULL,
                              method = c( "eigen", "chol" ),
                              out = NULL, names = NULL, ages = NULL,
@@ -1477,7 +1477,7 @@ simulate_morpho <- function( tree, mtraits, reps, c = NULL,
 
         for ( i in seq( 1: reps ) ){
 
-            write_morpho( filename = paste( out, "_", i, sep = "" ),
+            write.morpho( filename = paste( out, "_", i, sep = "" ),
                           proc     = Z[ , , i],
                           names    = names,
                           ages     = ages,
@@ -1529,7 +1529,7 @@ simulate_morpho <- function( tree, mtraits, reps, c = NULL,
 
         for ( i in seq( 1: reps ) ){
 
-          write_morpho( filename = paste( out, "_", i, sep = "" ),
+          write.morpho( filename = paste( out, "_", i, sep = "" ),
                         proc     = M.s[ , , i],
                         names    = names,
                         ages     = ages,
@@ -1583,7 +1583,7 @@ simulate_morpho <- function( tree, mtraits, reps, c = NULL,
 
       for ( i in seq( 1: reps ) ){
 
-        write_morpho( filename = paste( out, "_", i, sep = "" ),
+        write.morpho( filename = paste( out, "_", i, sep = "" ),
                       proc     = M[ , , i],
                       names    = names,
                       ages     = ages,

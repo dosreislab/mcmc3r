@@ -41,7 +41,7 @@ See \code{canids19x29.matrix} in the
 \code{data} directory for an example.
 }
 \seealso{
-\code{\link{array2matrix}}, \code{\link{write_morpho}}
+\code{\link{array2matrix}}, \code{\link{write.morpho}}
 }
 \author{
 Sandra Alvarez-Carretero

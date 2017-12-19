@@ -42,7 +42,7 @@ of specimens. See \code{canids19x29.array} in the \code{data} directory for an
 example of the format of a 3D array.
 }
 \seealso{
-\code{\link{matrix2array}}, \code{\link{write_morpho}}
+\code{\link{matrix2array}}, \code{\link{write.morpho}}
 }
 \author{
 Sandra Alvarez-Carretero
