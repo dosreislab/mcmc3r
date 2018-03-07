@@ -9,3 +9,10 @@ Description: Tools to work with MCMCTree, a program for Bayesian inference of sp
 License: MIT
 LazyData: TRUE
 RoxygenNote: 6.0.1
+Depends: R (>= 3.3.2)
+Imports:
+	ape, Rdpack
+RdMacros:
+	Rdpack
+Suggests:
+	testthat (>= 0.11.0)
