@@ -10,7 +10,7 @@ bayes.factors(...)
 \item{...}{list of marginal likelihood objects, see details}
 }
 \value{
-A list with elements \code{bf}, the Bayes factors; and \code{pr}, the 
+A list with elements \code{bf}, the Bayes factors; and \code{pr}, the
 posterior model probabilities.
 }
 \description{

@@ -6,6 +6,6 @@ Date: 2017-05-18
 Author: Mario dos Reis
 Maintainer: Mario dos Reis <mariodosreis@gmail.com>
 Description: Tools to work with MCMCTree, a program for Bayesian inference of species divergence times.
-License: MIT
+License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 6.0.1

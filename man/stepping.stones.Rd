@@ -12,7 +12,7 @@ stepping.stones(mcmcf = "mcmc.txt", betaf = "beta.txt")
 \item{betaf}{character, file with beta values}
 }
 \value{
-A list with components \code{logml}, the log-marginal likelihood estimate; 
+A list with components \code{logml}, the log-marginal likelihood estimate;
 \code{se}, the standard error of the estimate; \code{mean.logl}, the mean of
 log-likelihood values sampled for each beta; and \code{b}, the beta values
 used.
@@ -25,15 +25,15 @@ with mcmctree (or bpp).
 \details{
 The MCMC samples should be stored in a directory structure created
 by \code{make.bfctlf} with \code{method = "step-stones"}. The function will
-read the stored log-likelihood values and calculate the log-marginal 
-likelihood. 
+read the stored log-likelihood values and calculate the log-marginal
+likelihood.
 
-An approximation based on the Delta method is used to calculate the standard 
-error (see Xie et al. 2011). Warnings are given if the approximation appears 
+An approximation based on the Delta method is used to calculate the standard
+error (see Xie et al. 2011). Warnings are given if the approximation appears
 unreliable.
 }
 \references{
-Xie et al. (2011) Improving marginal likelihood estimation for Bayesian 
+Xie et al. (2011) Improving marginal likelihood estimation for Bayesian
 phylogenetic model selection. \emph{Systematic Biology}, 60: 150--160.
 }
 \seealso{

@@ -17,17 +17,17 @@ make.bfctlf(beta, ctlf = "mcmctree.ctl", betaf = "beta.txt")
 Prepare mcmctree or bpp control files for marginal likelihood calculation
 }
 \details{
-This function generates a set of \code{n} directories each 
-containing a modified \code{ctlf} control file with the appropriate beta 
-value to run mcmctree (or bpp) to obtain MCMC samples under the required 
+This function generates a set of \code{n} directories each
+containing a modified \code{ctlf} control file with the appropriate beta
+value to run mcmctree (or bpp) to obtain MCMC samples under the required
 power-posterior distribution. For the general theory of marginal likelihood
 calculation with power posteriors see Yang (2014).
 
 The beta values are printed to \code{betaf}.
 }
 \references{
-Yang Z (2014) \emph{Molecular Evolution: A Statistical Approach}. Oxford 
-University Press. Page xx.
+Yang Z (2014) \emph{Molecular Evolution: A Statistical Approach}. Oxford
+University Press. Pages 256--260.
 }
 \seealso{
 \code{\link{make.beta}}, \code{\link{stepping.stones}}
