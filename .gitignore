@@ -3,3 +3,5 @@
 .Rbuildignore
 .Rproj.user
 .RData
+.Ruserdata
+inst/doc
