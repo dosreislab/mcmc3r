@@ -1,0 +1,14 @@
+#' Correlation matrix for simulations
+#'
+#' True correlation matrix simulated to be used in the examples detailed in the \code{sim.pop()}
+#' function. The matrix follows the constant correlation model, hence all values
+#' outside the diagonal are rho = 0.50. The size is \code{p x p}, being n = 100
+#' the number of characters.
+#'
+#' @format A matrix of size n x n, where n = 100
+#' (morphological traits, the 100 simulated continuous traits):
+#' \describe{
+#'   \item{n}{Number of simulated continuous traits for which the correlation values
+#'   have been calculated, 100}
+#' }
+"sim.R"
