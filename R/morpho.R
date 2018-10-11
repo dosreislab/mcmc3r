@@ -1840,23 +1840,61 @@ treeMCMCtree <- function(tree, aln, filename){
 
 }
 
+#[[ OLD VERSION, MIGHT MATCH SUBSTRINGS ]]
+# .matchNames <- function( inp, tt ){
+# 
+#   # Replace names with names+ages
+#   for ( i in seq( 1:dim( inp )[1] ) ){
+#     name.inp = inp[i,1]
+#     #cat("This is name.inp= ", name.inp, "\n")
+#     name.sp = gsub( "\\^.*", "", name.inp )
+#     #print(name.sp)
+#     tt <- gsub( name.sp, name.inp, tt )
+#     #cat("This is name.sp =", name.sp, "\n")
+#     #cat("This is tt=, ", tt, "\n")
+#   }
+# 
+#   # Return tree with new species labels with ages
+#   return( tt )
+# 
+# }
 
 .matchNames <- function( inp, tt ){
-
+  
   # Replace names with names+ages
   for ( i in seq( 1:dim( inp )[1] ) ){
     name.inp = inp[i,1]
     #cat("This is name.inp= ", name.inp, "\n")
     name.sp = gsub( "\\^.*", "", name.inp )
     #print(name.sp)
-    tt <- gsub( name.sp, name.inp, tt )
+    
+    # Get patterns that can identify complete
+    # names excluding possible substrings
+    str1 <- paste0( "(\\(\\s*)", name.sp, collapse = "" )
+    str2 <- paste0( "((,)\\s*)", name.sp, collapse = "" )
+    
+    # If pattern "str1" or "str2" are found in the
+    # newick format, then replace them accordingly
+    if( any( grepl( str1, tt ) ) ){
+      tt <- gsub( pattern = str1,
+                  replacement = paste0( "\\(", name.inp,
+                                        collapse = "" ),
+                  x = tt, perl = TRUE )
+    }   
+    else if ( any( grepl( str2, tt ) ) ){
+      tt <- gsub( pattern = str2,
+                  replacement = paste0( ", ", name.inp,
+                                        collapse = "" ),
+                  x = tt, perl = TRUE )
+    }
+    
     #cat("This is name.sp =", name.sp, "\n")
     #cat("This is tt=, ", tt, "\n")
   }
-
+  
   # Return tree with new species labels with ages
   return( tt )
-
+  
 }
 
 
