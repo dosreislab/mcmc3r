@@ -108,9 +108,12 @@ the PAML documentation.
 # to the function are used as the default values
 tree <- system.file( "extdata", "19sMCMCTree.trees", package = "morpho")
 aln  <- system.file( "extdata", "seqfile.aln", package = "morpho")
-ctlMCMCTree( filename = "../mcmctree.ctl", mol = FALSE, seqfile = aln, treefile = tree,
-ndata = 1, clock = 2, TipDate = 1, RootAge = c("B(37.3, 66.0, 0.025, 0.025)"),
-BDparas = c( 1, 1, 0, 0.001 ), rgene_gamma = c( 2, 5 ),
-sigma2_gamma = c( 2, 2 ), burnin = 50000, sampfreq = 50, nsample = 20000 )
+
+# Uncomment the following lines followed by "##" and change the path in the filename so
+# it is saved where you want
+##ctlMCMCTree( filename = "../mcmctree.ctl", mol = FALSE, seqfile = aln, treefile = tree,
+##ndata = 1, clock = 2, TipDate = 1, RootAge = c("B(37.3, 66.0, 0.025, 0.025)"),
+##BDparas = c( 1, 1, 0, 0.001 ), rgene_gamma = c( 2, 5 ),
+##sigma2_gamma = c( 2, 2 ), burnin = 50000, sampfreq = 50, nsample = 20000 )
 
 }
