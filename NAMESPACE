@@ -1,6 +1,6 @@
 export(array2matrix)
 export(bayes.factors)
-export(ctlMCMCTree)
+export(ctlMCMCtree)
 export(gauss.quad)
 export(lmk_imp)
 export(make.beta)
