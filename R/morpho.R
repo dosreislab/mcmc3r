@@ -1978,7 +1978,7 @@ treeMCMCtree <- function(tree, aln, filename){
 #'
 #' @details
 #'
-#' For more information, please check the MCMCTree tutorial and
+#' For more information, please check the MCMCtree tutorial and
 #' the PAML documentation.
 #'
 #' @examples
@@ -1986,15 +1986,18 @@ treeMCMCtree <- function(tree, aln, filename){
 #' # First create objects with the path to alignment and tree files and then
 #' # call the function to generate the control file. The parameters not passed
 #' # to the function are used as the default values
-#' tree <- system.file( "extdata", "19sMCMCTree.trees", package = "morpho")
+#' tree <- system.file( "extdata", "19s.trees", package = "morpho")
 #' aln  <- system.file( "extdata", "seqfile.aln", package = "morpho")
-#' ctlMCMCTree( filename = "../mcmctree.ctl", mol = FALSE, seqfile = aln, treefile = tree,
-#' ndata = 1, clock = 2, TipDate = 1, RootAge = c("B(37.3, 66.0, 0.025, 0.025)"),
-#' BDparas = c( 1, 1, 0, 0.001 ), rgene_gamma = c( 2, 5 ),
-#' sigma2_gamma = c( 2, 2 ), burnin = 50000, sampfreq = 50, nsample = 20000 )
+#' 
+#' # Uncomment the following lines followed by "##" and change the path in the filename so
+#' # it is saved where you want
+#' ##ctlMCMCtree( filename = "../mcmctree.ctl", mol = FALSE, seqfile = aln, treefile = tree,
+#' ##ndata = 1, clock = 2, TipDate = 1, RootAge = c("B(37.3, 66.0, 0.025, 0.025)"),
+#' ##BDparas = c( 1, 1, 0, 0.001 ), rgene_gamma = c( 2, 5 ),
+#' ##sigma2_gamma = c( 2, 2 ), burnin = 50000, sampfreq = 50, nsample = 20000 )
 #'
 #' @export
-ctlMCMCTree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mcmcfile = "mcmc.txt",
+ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mcmcfile = "mcmc.txt",
                          outfile = "out.txt", ndata, seqtype = 0, usedata = 1, clock, RootAge,
                          TipDate, alpha, ncatG, cleandata = 0, BDparas, kappa_gamma, alpha_gamma,
                          rgene_gamma, sigma2_gamma, print = 2, burnin, sampfreq, nsample, model ){
