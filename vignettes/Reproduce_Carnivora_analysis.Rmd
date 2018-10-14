@@ -128,7 +128,7 @@ carnivores19x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = 
 knitr::kable(carnivores19x29.raw)
 ```
 
-  * It has 19 rows, one for each of the 19 specimens, and 89 columns, 2 columns with information about the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29 x 3=87$ morphological traits.  
+  * It has 19 rows, one for each of the 19 specimens, and 89 columns, 2 columns with information about the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29\times3=87$ morphological traits.  
 
 ```{r}
 dim( carnivores19x29.raw )
