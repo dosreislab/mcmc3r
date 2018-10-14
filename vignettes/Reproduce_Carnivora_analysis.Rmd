@@ -20,8 +20,8 @@ This vignette aims to explain the methodology applied to obtain the morphologica
 
   1. Collect and process morphological data  
   2. Perform Procrustes alignment   
-  3. Obtain morphological alignment, `M`  
-  4. Correct `M` for population noise and character correlation  
+  3. Obtain morphological alignments, `C` and `V`  
+  4. Correct `C` for population noise and character correlation  
   5. Generate alignment in MCMCtree format
   
 Once these steps are completed, the user obtains the morphological alignment in which the population noise and the correlation among characters have been corrected for. Note that this is the same file we obtained and used in the manuscript. All these steps are detailed in the following sections.
@@ -41,27 +41,27 @@ population noise (step 4) before Bayesian inference. In this tutorial, we use 21
 The information for the 19 carnivoran specimens is detailed in the next table. The ages used in `MCMCtree` during the Bayesian inference are highlighted in bold.
 
 
-| Taxon^{(\mathrm{a})}                          | Voucher specimen | Specimen age (mid-point age^{(\mathrm{b})}), Ma | Reference^{(\mathrm{c})}                                                                     |
+| Taxon<sup>**a**</sup>                          | Voucher specimen | Specimen age (mid-point age<sup>**b**</sup>, Ma | Reference<sup>**c**</sup>                                                                     |
 |-----------------------------------------------|------------------|-------------------------------------------------|----------------------------------------------------------------------------------------------|
-| Hesperocyon sp. ???                             | NMNH 459576      | 35.5500 (37.2000\text{-}33.9000)                | National Museum of Natural History collection                                                |
-| Enhydrocyon pahinsintewakpa ???                 | AMNH 27579       | 28.5500 (30.800\text{-}26.3000)                 | Wang 1994, pp. 89-90                                                                         |
-| Paraenhydrocyon josephi ???                     | YPM 12702        | 25.6150 (30.8000\text{-}20.4300)                | Wang 1994, p. 135 & p. 141                                                                   |
-| Tomarctus hippophaga ???                        | AMNH 61156       | 14.7850 (15.9700\text{-}13.6000)                | Wang et al. 1999, pp. 157-158                                                                |
-| Aelurodon ferox ???                             | AMNH 61757       | 13.1350 (15.9700\text{-}10.3000)                | Wang et al. 1999, pp. 182-183                                                                |
-| Epicyon haydeni ???                             | LACM 131855      | 11.9500 (13.6000\text{-}10.3000)                | Wang et al. 1999, pp. 252-254                                                                |
-| Smilodon fatalis ???                            | LACMHC 1360      | 0.0285 (0.0440\text{-}0.0130)                   | La Brea Tar Pits collection                                                                  |
-| Hyaenictitherium wongii ???                     | China G L-49     | 6.6500 (8.0000\text{-}5.3000)                   | Werdelin 1988, p. 259; Werdelin & Solounias 1991, p. 33; Tseng & Wang 2007, p. 708 (Table 2) |
-| Canis dirus ???                                 | LACMHC 2300-4    | 0.0285 (0.0440\text{-}0.0130)                   | La Brea Tar Pits collection                                                                  |
-| Ursus americanus americanus (O)               | FMNH 106356      | 0                                               | -                                                                                            |
-| Ailurus fulgens (O)                           | FMNH 60762       | 0                                               | -                                                                                            |
-| Nandinia binotata (O)                         | FMNH 149362      | 0                                               | -                                                                                            |
-| Paradoxurus hermaphroditus phillipinensis (O) | FMNH 33548       | 0                                               | -                                                                                            |
-| Cuon alpinus primaevus                        | FMNH 38515       | 0                                               | -                                                                                            |
-| Speothos venaticus                            | FMNH 87861       | 0                                               | -                                                                                            |
-| Canis lupus lycaon                            | FMNH 153800      | 0                                               | -                                                                                            |
-| Cerdocyon thous aquilis                       | FMNH 68889       | 0                                               | -                                                                                            |
-| Otocyon megalotis                             | AMNH 179143      | 0                                               | -                                                                                            |
-| Vulpes vulpes pusilla                         | FMNH 112415      | 0                                               | -                                                                                            |                                                                                      |
+| *Hesperocyon sp.* †                             | NMNH 459576      | 35.5500 (37.2000-33.9000)                | National Museum of Natural History collection                                                |
+| *Enhydrocyon pahinsintewakpa* †                 | AMNH 27579       | 28.5500 (30.800-26.3000)                 | Wang 1994, pp. 89-90                                                                         |
+| *Paraenhydrocyon josephi* †                     | YPM 12702        | 25.6150 (30.8000-20.4300)                | Wang 1994, p. 135 & p. 141                                                                   |
+| *Tomarctus hippophaga* †                        | AMNH 61156       | 14.7850 (15.9700-13.6000)                | Wang et al. 1999, pp. 157-158                                                                |
+| *Aelurodon ferox* †                             | AMNH 61757       | 13.1350 (15.9700-10.3000)                | Wang et al. 1999, pp. 182-183                                                                |
+| *Epicyon haydeni* †                             | LACM 131855      | 11.9500 (13.6000-10.3000)                | Wang et al. 1999, pp. 252-254                                                                |
+| *Smilodon fatalis* †                            | LACMHC 1360      | 0.0285 (0.0440-0.0130)                   | La Brea Tar Pits collection                                                                  |
+| *Hyaenictitherium wongii* †                     | China G L-49     | 6.6500 (8.0000-5.3000)                   | Werdelin 1988, p. 259; Werdelin & Solounias 1991, p. 33; Tseng & Wang 2007, p. 708 (Table 2) |
+| *Canis dirus* †                                 | LACMHC 2300-4    | 0.0285 (0.0440-0.0130)                   | La Brea Tar Pits collection                                                                  |
+| *Ursus americanus americanus* (O)               | FMNH 106356      | 0                                               | -                                                                                            |
+| *Ailurus fulgens* (O)                           | FMNH 60762       | 0                                               | -                                                                                            |
+| *Nandinia binotata* (O)                         | FMNH 149362      | 0                                               | -                                                                                            |
+| *Paradoxurus hermaphroditus phillipinensis* (O) | FMNH 33548       | 0                                               | -                                                                                            |
+| *Cuon alpinus primaevus*                        | FMNH 38515       | 0                                               | -                                                                                            |
+| *Speothos venaticus*                            | FMNH 87861       | 0                                               | -                                                                                            |
+| *Canis lupus lycaon*                            | FMNH 153800      | 0                                               | -                                                                                            |
+| *Cerdocyon thous aquilis*                       | FMNH 68889       | 0                                               | -                                                                                            |
+| *Otocyon megalotis*                             | AMNH 179143      | 0                                               | -                                                                                            |
+| *Vulpes vulpes pusilla*                         | FMNH 112415      | 0                                               | -                                                                                            |                                                                                      |
 
 <sub><sup>**a**</sup>The first nine species are extinct species (indicated by a dagger) and the next ten are extant species. Those with the label "(O)" are outgroups.</sub>  
 <sub><sup>**b**</sup>Mid-point age calculated from the maximum and minimum ages of the voucher specimen according to the formation from which it was retrieved. See column with header "Reference" for the literature where the corresponding specimen and the formation from where it was collected are described.</sub>  
@@ -104,7 +104,7 @@ The 29 landmarks collected from the 18+21 carnivoran specimens are the following
 | 28         | Occipital condyle - extreme - left                    |
 | 29         | Occipital condyle - extreme - right                   |
 
-The next plot shows the placement of these landmarks. The crosses in orange correspond to the landmarks collected from the 21 foxes (*Vulpes vulpes*), while those collected from the rest of 18 carnivoran specimens are shown in grey crosses. The black dots correspond to the mean shape of each landmark regarding the morphological alignment with the 19
+The next plot shows the placement of these landmarks. The crosses in orange correspond to the landmarks collected from the 21 foxes (*Vulpes vulpes*), while those collected from the rest of the 18 carnivoran specimens are shown in grey crosses. The black dots correspond to the mean shape of each landmark regarding the morphological alignment with the 19
 carnivoran specimens:  
 
 
@@ -116,19 +116,19 @@ carnivoran specimens:
 The landmarks can be collected in 2D (`x` and `y` coordinates per landmark) or 3D (`x`, `y`, and `z` coordinates per landmark). In this tutorial, we are using 29 3D landmarks. In the next subsections, you will find an explanation about how to process the two raw data sets.
 
 #### A. Carnivores data set
-  1. Load the raw data. In this tutorial, you will find the raw data for the carnivoran specimens in the inst/extdata directory.  
+  1. Load the raw data. In this tutorial, you will find the raw data for the carnivoran specimens in the `inst/extdata` directory.  
 ```{r}
 filepath <- system.file( "extdata", "carnivores19x29.tsv", package = "mcmc3r")
 carnivores19x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".", sep = "\t" )
 ```  
 
-  * The format of this object `carnivores19x29.raw` is the following:  
+  * The format of this object, `carnivores19x29.raw`, is the following:  
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(carnivores19x29.raw)
 ```
 
-  * It has 19 rows, one for each of the 19 specimens, and 89 columns, 2 columns with information about the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29x3 = 87$ morphological traits.  
+  * It has 19 rows, one for each of the 19 specimens, and 89 columns, 2 columns with information about the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29\times3=87$ morphological traits.  
 
 ```{r}
 dim( carnivores19x29.raw )
@@ -145,19 +145,19 @@ row.names( C.mat ) <- carnivores19x29.raw[ ,1 ]
 
 
 #### B. Foxes data set
-  1. Load the raw data. As mentioned before, you can find the raw data in the inst/extdata directory.    
+  1. Load the raw data. As mentioned before, you can find the raw data in the `inst/extdata` directory.    
 ```{r}
 filepath <- system.file( "extdata", "vulpes21x29.tsv", package = "mcmc3r")
 vulpes21x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".", sep = "\t" )
 ```  
 
-  * The format of this object `vulpes19x29.raw` is the following:  
+  * The format of this object, `vulpes21x29.raw`, is the following:  
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(vulpes21x29.raw)
 ```
 
-  * It has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29x3 = 87$ morphological characters  
+  * It has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29\times3=87$ morphological characters  
 
 ```{r}
 dim( vulpes21x29.raw )
@@ -170,8 +170,7 @@ V.mat <- as.matrix( vulpes21x29.raw[ , 2:dim( vulpes21x29.raw )[2] ] )
 row.names( V.mat ) <- vulpes21x29.raw[ , 1 ]
 ```
 
-
-Now, we have two objects of class matrix with the two processed data sets: `C.mat` (carnivores, 18x29) and `V.mat` (foxes, 21x29). We can now continue with the Procrustes alignment!  
+Now, we have two objects of class matrix with the two processed data sets: `C.mat` (carnivores, $19\times29$) and `V.mat` (foxes, $21\times29$). We can now continue with the Procrustes alignment!  
 
 ## 2. Procrustes alignment
 
@@ -185,7 +184,7 @@ C.arr <- mcmc3r::matrix2array( X = C.mat, coords = 3 )
 V.arr <- mcmc3r::matrix2array( X = V.mat, coords = 3 )
 ```  
 
- 2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens except for the foxes (18 specimens), resulting in the morphological alignment saved in object `C.PS` (18x87).   
+ 2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens except for the foxes (19 specimens), resulting in the morphological alignment saved in object `C.PS` ($19\times87$).   
  
 ```{r}
  #2.1. Get right and left vectors with corresponding symmetric landmarks
@@ -197,15 +196,13 @@ C.PS  <- Morpho::procSym( dataarray = C.arr,
                         pairedLM = pairedLM )
 ```
 
- 3. We had previously put in an array the 21 foxes specimens and they are in object "V.arr". So now we remove from "V.arr" the rows with the common fox in the objects "C.arr" and "V.arr". This is done to avoid having repeated data, as "C.PS" contains an alignment with the same fox in both data sets. The common fox is the first specimen,
-therefore this is the specimen we remove from the array.   
+ 3. We had previously put in an array the 21 foxes specimens and they are in object `V.arr`. So now we remove from `V.arr` the rows with the common fox in the objects `C.arr` and `V.arr`. This is done to avoid having repeated data, as `C.PS` contains an alignment with the same fox in both data sets. The common fox is the first specimen, therefore this is the specimen we remove from the array.   
 
 ```{r}
 V.arr.nov1 <- V.arr[,,-1]
 ```
 
-
- 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` (21x87).   
+ 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($20\times87$).   
 
 ```{r}
 V.PS.nov1             <- Morpho::align2procSym( x = C.PS, newdata = V.arr.nov1 )
@@ -213,7 +210,7 @@ V.PS.nov1             <- Morpho::align2procSym( x = C.PS, newdata = V.arr.nov1 )
 dimnames( V.PS.nov1 ) <- dimnames( V.arr.nov1 )
 ```
 
- 5. Get the vulpes (Vulpes_1) from C.PS, in position 13, and add it to V.PS. This includes the vulpes in the previous alignment.      
+ 5. Get the vulpes (Vulpes_1) from `C.PS`, in position 13, and add it to `V.PS`. This includes the vulpes in the previous alignment.      
 
 ```{r}
 V.PS              <- array( dim = c( 29, 3, 21 ) )
@@ -229,7 +226,7 @@ V.PS[,,2:21] <- V.PS.nov1
 Now, we have finished the Procrustes analyse! In the next step, we will obtain the morphological alignment for the carnivores and the foxes!
 
 
-## 3. Obtain morphological alignments  
+## 3. Obtain morphological alignments, `C` and `V`  
 
 This step is very fast, as we only need to convert the array objects `C.PS$rotated` and `V.PS` in objects of class matrix:
  
