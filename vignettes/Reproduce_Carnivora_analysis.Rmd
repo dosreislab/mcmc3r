@@ -151,7 +151,7 @@ filepath <- system.file( "extdata", "vulpes21x29.tsv", package = "mcmc3r")
 vulpes21x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".", sep = "\t" )
 ```  
 
-  * The format of this object, `vulpes19x29.raw`, is the following:  
+  * The format of this object, `vulpes21x29.raw`, is the following:  
 
 ```{r, echo=FALSE, results='asis'}
 knitr::kable(vulpes21x29.raw)
@@ -170,7 +170,7 @@ V.mat <- as.matrix( vulpes21x29.raw[ , 2:dim( vulpes21x29.raw )[2] ] )
 row.names( V.mat ) <- vulpes21x29.raw[ , 1 ]
 ```
 
-Now, we have two objects of class matrix with the two processed data sets: `C.mat` (carnivores, 18x29) and `V.mat` (foxes, 21x29). We can now continue with the Procrustes alignment!  
+Now, we have two objects of class matrix with the two processed data sets: `C.mat` (carnivores, $19\times29$) and `V.mat` (foxes, $21\times29$). We can now continue with the Procrustes alignment!  
 
 ## 2. Procrustes alignment
 
@@ -184,7 +184,7 @@ C.arr <- mcmc3r::matrix2array( X = C.mat, coords = 3 )
 V.arr <- mcmc3r::matrix2array( X = V.mat, coords = 3 )
 ```  
 
- 2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens except for the foxes (18 specimens), resulting in the morphological alignment saved in object `C.PS` (18x87).   
+ 2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens except for the foxes (19 specimens), resulting in the morphological alignment saved in object `C.PS` ($19\times87$).   
  
 ```{r}
  #2.1. Get right and left vectors with corresponding symmetric landmarks
@@ -202,7 +202,7 @@ C.PS  <- Morpho::procSym( dataarray = C.arr,
 V.arr.nov1 <- V.arr[,,-1]
 ```
 
- 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($21\times87$).   
+ 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($20\times87$).   
 
 ```{r}
 V.PS.nov1             <- Morpho::align2procSym( x = C.PS, newdata = V.arr.nov1 )
