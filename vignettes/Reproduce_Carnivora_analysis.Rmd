@@ -157,7 +157,7 @@ vulpes21x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".",
 knitr::kable(vulpes21x29.raw)
 ```
 
-  * It has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29x3 = 87$ morphological characters  
+  * It has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the 3D coordinates collected for each landmarks, i.e. $29\times3=87$ morphological characters  
 
 ```{r}
 dim( vulpes21x29.raw )
@@ -202,7 +202,7 @@ C.PS  <- Morpho::procSym( dataarray = C.arr,
 V.arr.nov1 <- V.arr[,,-1]
 ```
 
- 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` (21x87).   
+ 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($21\times87$).   
 
 ```{r}
 V.PS.nov1             <- Morpho::align2procSym( x = C.PS, newdata = V.arr.nov1 )
