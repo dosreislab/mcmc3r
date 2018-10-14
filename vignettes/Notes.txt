@@ -1,0 +1,4 @@
+Tutorails pending to do:   
+   * How to simulate a population sample   
+   * Write MCMCtree files   
+   
