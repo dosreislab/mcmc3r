@@ -20,8 +20,8 @@ This vignette aims to explain the methodology applied to obtain the morphologica
 
   1. Collect and process morphological data  
   2. Perform Procrustes alignment   
-  3. Obtain morphological alignment, `M`  
-  4. Correct `M` for population noise and character correlation  
+  3. Obtain morphological alignments, `C` and `V`  
+  4. Correct `C` for population noise and character correlation  
   5. Generate alignment in MCMCtree format
   
 Once these steps are completed, the user obtains the morphological alignment in which the population noise and the correlation among characters have been corrected for. Note that this is the same file we obtained and used in the manuscript. All these steps are detailed in the following sections.
@@ -229,7 +229,7 @@ V.PS[,,2:21] <- V.PS.nov1
 Now, we have finished the Procrustes analyse! In the next step, we will obtain the morphological alignment for the carnivores and the foxes!
 
 
-## 3. Obtain morphological alignments  
+## 3. Obtain morphological alignments, `C` and `V`  
 
 This step is very fast, as we only need to convert the array objects `C.PS$rotated` and `V.PS` in objects of class matrix:
  
