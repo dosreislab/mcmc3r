@@ -1357,7 +1357,7 @@ sim.pop <- function( psample, n, c, R ){
   rownames( P ) <- vars$names
 
   # Return P
-  if ( missing( R ) ){
+  if ( ! missing( R ) ){
     return( list( P = P, var = var.P, Rsh = R.sh ) )
   }else
     return( list( P = P, var = var.P ) )
