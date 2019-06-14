@@ -24,5 +24,5 @@ If using the package for marginal likelihood calculation please cite:
 
 The continuous morphological models are described in:
 
-* Álvarez-Carretero et al. (2010) [Bayesian estimation of species divergence times using correlated quantitative characters.](https://doi.org/10.1093/sysbio/syz015) Syst. Biol., *In Press*.  
+* Álvarez-Carretero et al. (2019) [Bayesian estimation of species divergence times using correlated quantitative characters.](https://doi.org/10.1093/sysbio/syz015) Syst. Biol., *In Press*.  
 *You can read the preprint in bioRxiv [here](https://doi.org/10.1101/441105).*
