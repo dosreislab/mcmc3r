@@ -15,14 +15,13 @@ The package is also useful for working with quantitative morphological character
    * Generate a morphological alignment file in phylip format in which the population noise and the correlation among characters have been taken into account. This morphological alignment is suitable for Bayesian inference of divergence times with `MCMCtree`.
    * Simulate a morphological alignment, with population noise and correlations, on a phylogeny.
    * Simulate a population sample of noisy and correlated quantitative characters.
-   * Generate suitable tree and a control files for use in `MCMCtree`.
+   * Generate suitable tree and control files for use in `MCMCtree`.
 
 ## References
 If using the package for marginal likelihood calculation please cite:
 
-* dos Reis et al. (2018) [Using phylogenomic data to explore the effects of relaxed clocks and calibration strategies on divergence time estimation: Primates as a test case.](https://doi.org/10.1093/sysbio/syy001) Syst. Biol., 67: 594--615.
+* dos Reis et al. (2018) [Using phylogenomic data to explore the effects of relaxed clocks and calibration strategies on divergence time estimation: Primates as a test case.](https://doi.org/10.1093/sysbio/syy001) Syst. Biol., 67: 594–615.
 
 The continuous morphological models are described in:
 
-* Álvarez-Carretero et al. (2019) [Bayesian estimation of species divergence times using correlated quantitative characters.](https://doi.org/10.1093/sysbio/syz015) Syst. Biol., *In Press*.  
-*You can read the preprint in bioRxiv [here](https://doi.org/10.1101/441105).*
+* Álvarez-Carretero et al. (2019) [Bayesian estimation of species divergence times using correlated quantitative characters.](https://doi.org/10.1093/sysbio/syz015) Syst. Biol., 68: 967–986.  
