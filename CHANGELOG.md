@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.1] - 2020-02-24
+### Changed
+- Function `bayes.factors` so that bootstrap CI's are printed with models as
+rows and 95% CI as columns.
+
 ## [0.3.0] - 2018-10-14
 ### Added
 A collection of functions for working with continuous morphological data. These

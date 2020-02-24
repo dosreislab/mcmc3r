@@ -271,7 +271,7 @@ bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
   
   rtn <- list(bf=bf, pr=pr, prior=prior / sum(prior))
   
-  # calcualte parametric bootstrap CIs for posterior probabilities
+  # calculate parametric bootstrap CIs for posterior probabilities
   if (boot) {
     mm <- matrix(0, ncol=N, nrow=n)
     for (i in 1:N) {
@@ -282,7 +282,7 @@ bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
     prob = 1 - prob
     prci <- apply(prm, 2, quantile, probs=c(prob/2, 1 - prob/2))
     
-    rtn$pr.ci <- prci
+    rtn$pr.ci <- t(prci)
   }
 
   return ( rtn )

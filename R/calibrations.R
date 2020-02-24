@@ -1,4 +1,5 @@
 # This file originates from the phylogenomic mammal paper (dos Reis et al. 2012, PRSB)
+# TODO: Export functions and add documentation
 
 u975 <- function(tL, p=0.1, c=1) {
   A <- .5 + atan(p/c) / pi
