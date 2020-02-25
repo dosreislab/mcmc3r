@@ -9,7 +9,7 @@ make.bfctlf(beta, ctlf = "mcmctree.ctl", betaf = "beta.txt")
 \arguments{
 \item{beta}{numeric vector of beta values}
 
-\item{ctlf}{character, mcmctree control file template}
+\item{ctlf}{character, mcmctree or bpp control file template}
 
 \item{betaf}{character, file onto which to write selected beta values}
 }

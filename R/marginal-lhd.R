@@ -5,7 +5,7 @@
 #' Prepare mcmctree or bpp control files for marginal likelihood calculation
 #'
 #' @param beta numeric vector of beta values
-#' @param ctlf character, mcmctree control file template
+#' @param ctlf character, mcmctree or bpp control file template
 #' @param betaf character, file onto which to write selected beta values
 #'
 #' @details
@@ -117,8 +117,8 @@ make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
 #' phylogenetic model selection. \emph{Systematic Biology}, 60: 150--160.
 #'
 #' @seealso
-#' \code{\link{make.bfctlf}} to prepare directories and mcmctree control files
-#' to calculate the power posterior.
+#' \code{\link{make.bfctlf}} to prepare directories and mcmctree or bpp control
+#' files to calculate the power posterior.
 #'
 #' @author Mario dos Reis
 #'
@@ -143,10 +143,11 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   for (i in 1:n) {
     ess[i] <- coda::effectiveSize(Ls[[i]])
     vzr[i] <- var(Ls[[i]]) / ess[i]
+    # the delta approximation does not work well if vzr/zr^2 > 0.1
     if (vzr[i] / zr[i]^2 > 0.1)
-      warning ("unreliable se: var(r_k)/r_k^2 = ", vzr[i] / zr[i]^2, " for b = ", b[i])
+      warning ("unreliable se: var(r_k)/r_k^2 = ", vzr[i] / zr[i]^2, " > 0.1 for b = ", b[i])
   }
-  vmlnl <- sum(vzr / zr^2)  # the delta approximation does not work well if vzr/zr^2 > 0.1
+  vmlnl <- sum(vzr / zr^2)
 
   lnml <- sum(log(zr) + C)
   return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b[1:n]) )
@@ -186,8 +187,8 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
 #' Primates as a test case. \emph{bioRxiv}
 #'
 #' @seealso
-#' \code{\link{make.bfctlf}} to prepare directories and mcmctree control files
-#' to calculate the power posterior.
+#' \code{\link{make.bfctlf}} to prepare directories and mcmctree or bpp control
+#' files to calculate the power posterior.
 #'
 #' @author Mario dos Reis
 #'
