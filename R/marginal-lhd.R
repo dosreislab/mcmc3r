@@ -132,7 +132,7 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   bdiff <- diff(b)
 
   for (i in 1:n) {
-    lnLs[[i]] <- read.table(paste(i, "/", mcmcf, sep=""), header=TRUE)$lnL
+    lnLs[[i]] <- na.omit(read.table(paste(i, "/", mcmcf, sep=""), header=TRUE, fill=TRUE)$lnL)
     mlnl[i] <- mean(lnLs[[i]])
     lnLs[[i]] <- bdiff[i] * lnLs[[i]]
     C[i] <- max(lnLs[[i]])
@@ -201,7 +201,7 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   ess <- vv <- numeric(n)
 
   for (i in 1:n) {
-    lnLs[[i]] <- read.table(paste(i, "/", mcmcf, sep=""), header=TRUE)$lnL
+    lnLs[[i]] <- na.omit(read.table(paste(i, "/", mcmcf, sep=""), header=TRUE, fill=TRUE)$lnL)
   }
 
   mlnl <- sapply(lnLs, mean)

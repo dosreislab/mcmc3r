@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.3.2] - 2020-12-30
+### Fixed
+- Functions `stepping.stones` and `gauss.quad` so that they work correctly 
+with incomplete mcmctree MCMC output files.
+
 ## [0.3.1] - 2020-02-24
 ### Changed
 - Function `bayes.factors` so that bootstrap CI's are printed with models as
