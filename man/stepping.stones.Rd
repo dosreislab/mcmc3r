@@ -4,12 +4,14 @@
 \alias{stepping.stones}
 \title{Estimate marginal likelihood by stepping stones}
 \usage{
-stepping.stones(mcmcf = "mcmc.txt", betaf = "beta.txt")
+stepping.stones(mcmcf = "mcmc.txt", betaf = "beta.txt", se = TRUE)
 }
 \arguments{
 \item{mcmcf}{character, mcmc output file name}
 
 \item{betaf}{character, file with beta values}
+
+\item{se}{logical, whether to calculate the standard error}
 }
 \value{
 A list with components \code{logml}, the log-marginal likelihood estimate;
@@ -28,9 +30,9 @@ by \code{make.bfctlf} with \code{method = "step-stones"}. The function will
 read the stored log-likelihood values and calculate the log-marginal
 likelihood.
 
-An approximation based on the Delta method is used to calculate the standard
-error (see Xie et al. 2011). Warnings are given if the approximation appears
-unreliable.
+If \code{se = TRUE}, an approximation based on the Delta method is used to
+calculate the standard error (see Xie et al. 2011). Warnings are given if the
+approximation appears unreliable.
 }
 \references{
 Xie et al. (2011) Improving marginal likelihood estimation for Bayesian

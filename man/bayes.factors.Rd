@@ -4,7 +4,7 @@
 \alias{bayes.factors}
 \title{Calculate Bayes factors and posterior model probabilities}
 \usage{
-bayes.factors(..., prior = NULL, boot = TRUE, n = 1000,
+bayes.factors(..., prior = NULL, boot = TRUE, n = 10000,
   prob = 0.95)
 }
 \arguments{
@@ -19,9 +19,10 @@ bayes.factors(..., prior = NULL, boot = TRUE, n = 1000,
 \item{prob}{numeric, the probability used to calculate the boostrap CI}
 }
 \value{
-A list with elements \code{bf}, the Bayes factors; \code{pr}, the posterior 
-model probabilities; \code{prior} the prior model probabilities and, if 
-\code{boot = TRUE}, \code{pr.ci} the equal-tail bootstrap confidence interval.
+A list with elements \code{bf} and \code{logbf}, the Bayes factors and
+log-Bayes factors; \code{pr}, the posterior model probabilities; \code{prior}
+the prior model probabilities and, if \code{boot = TRUE}, \code{pr.ci} the
+equal-tail bootstrap confidence interval.
 }
 \description{
 Calculate Bayes factors and posterior model probabilities
@@ -32,7 +33,7 @@ either \code{stepping.stones()} or \code{gauss.quad()}. If \code{boot =
 TRUE}, parametric bootstrap is performed by assuming the log-marginal 
 likelihood estimates are normally distributed with standard deviation equal 
 to the standard error. The re-sampled \code{n} marginal log-likelihoods are
-used to estimate re-sampled posterior probabilities, and to calculate an 
+used to estimate re-sampled posterior probabilities and to calculate an 
 equal-tail bootstrap confidence interval for these.
 
 Note that the length of \code{prior} should be the same as the number of

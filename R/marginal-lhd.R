@@ -95,6 +95,7 @@ make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
 #'
 #' @param mcmcf character, mcmc output file name
 #' @param betaf character, file with beta values
+#' @param se logical, whether to calculate the standard error
 #'
 #' @details
 #' The MCMC samples should be stored in a directory structure created
@@ -102,9 +103,9 @@ make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
 #' read the stored log-likelihood values and calculate the log-marginal
 #' likelihood.
 #'
-#' An approximation based on the Delta method is used to calculate the standard
-#' error (see Xie et al. 2011). Warnings are given if the approximation appears
-#' unreliable.
+#' If \code{se = TRUE}, an approximation based on the Delta method is used to
+#' calculate the standard error (see Xie et al. 2011). Warnings are given if the
+#' approximation appears unreliable.
 #'
 #' @return
 #' A list with components \code{logml}, the log-marginal likelihood estimate;
@@ -123,7 +124,7 @@ make.beta <- function(n, method=c("step-stones", "gauss-quad"),  a=5) {
 #' @author Mario dos Reis
 #'
 #' @export
-stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
+stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
   b <- c(scan(betaf), 1)
   n <- length(b) - 1
   lnLs <- list()
@@ -140,14 +141,18 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
     zr[i] <- mean(Ls[[i]])
   }
 
-  for (i in 1:n) {
-    ess[i] <- coda::effectiveSize(Ls[[i]])
-    vzr[i] <- var(Ls[[i]]) / ess[i]
-    # the delta approximation does not work well if vzr/zr^2 > 0.1
-    if (vzr[i] / zr[i]^2 > 0.1)
-      warning ("unreliable se: var(r_k)/r_k^2 = ", vzr[i] / zr[i]^2, " > 0.1 for b = ", b[i])
+  if (se) {
+    for (i in 1:n) {
+      ess[i] <- coda::effectiveSize(Ls[[i]])
+      vzr[i] <- var(Ls[[i]]) / ess[i]
+      # the delta approximation does not work well if vzr/zr^2 > 0.1
+      if (vzr[i] / zr[i]^2 > 0.1)
+        warning ("unreliable se: var(r_k)/r_k^2 = ", vzr[i] / zr[i]^2, " > 0.1 for b = ", b[i])
+    }
+    vmlnl <- sum(vzr / zr^2)
+  } else {
+    vmlnl <- NA
   }
-  vmlnl <- sum(vzr / zr^2)
 
   lnml <- sum(log(zr) + C)
   return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b[1:n]) )
@@ -231,7 +236,7 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
 #' TRUE}, parametric bootstrap is performed by assuming the log-marginal 
 #' likelihood estimates are normally distributed with standard deviation equal 
 #' to the standard error. The re-sampled \code{n} marginal log-likelihoods are
-#' used to estimate re-sampled posterior probabilities, and to calculate an 
+#' used to estimate re-sampled posterior probabilities and to calculate an 
 #' equal-tail bootstrap confidence interval for these.
 #' 
 #' Note that the length of \code{prior} should be the same as the number of
@@ -251,14 +256,15 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
 #' bayes.factors(sc, ir, ar, prior=c(0,1,0))
 #'
 #' @return
-#' A list with elements \code{bf}, the Bayes factors; \code{pr}, the posterior 
-#' model probabilities; \code{prior} the prior model probabilities and, if 
-#' \code{boot = TRUE}, \code{pr.ci} the equal-tail bootstrap confidence interval.
+#' A list with elements \code{bf} and \code{logbf}, the Bayes factors and
+#' log-Bayes factors; \code{pr}, the posterior model probabilities; \code{prior}
+#' the prior model probabilities and, if \code{boot = TRUE}, \code{pr.ci} the
+#' equal-tail bootstrap confidence interval.
 #'
 #' @author Mario dos Reis
 #'
 #' @export
-bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
+bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e4, prob=0.95) {
   model <- list(...)
   N <- length(model)
   logml <- numeric(N)
@@ -267,10 +273,30 @@ bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
 
   for (i in 1:N) logml[i] <- model[[i]]$logml
 
-  bf <- exp(logml - max(logml))
+  logbf <- logml - max(logml)
+  bf <- exp(logbf)
   pr <- bf * prior / sum(bf * prior)
   
-  rtn <- list(bf=bf, pr=pr, prior=prior / sum(prior))
+  rtn <- list(bf=bf, logbf=logbf, pr=pr, prior=prior / sum(prior))
+  
+  # calculates CI analytically when N = 2 models
+  # does not appear necessary as this converges to the bootstrap
+  # estimate when n is very large
+  # (needs to be tested for various priors)
+  # if (!boot & N == 2) { 
+  #   logbfsd <- sqrt(model[[1]]$se^2 + model[[2]]$se^2)
+  #   mm <- matrix(0, ncol=2, nrow=2)
+  #   prob = 1 - prob
+  #   qn <- qnorm(prob/2, 0, 1)
+  #   mm[1,] <- c(logbf[1], logbf[2] + qn * logbfsd) + log(prior)
+  #   mm[2,] <- c(logbf[1], logbf[2] - qn * logbfsd) + log(prior)
+  #   bfm <- exp(mm - apply(mm, 1, max))
+  #   prm <- t(bfm / apply(bfm, 1, sum))
+  #   prm[1,] <- rev(prm[1,])
+  #   colnames(prm) <- c(prob/2, 1 - prob/2)
+  #   
+  #   rtn$pr.ci <- prm
+  # }
   
   # calculate parametric bootstrap CIs for posterior probabilities
   if (boot) {
@@ -281,7 +307,8 @@ bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
     bfm <- exp(mm - apply(mm, 1, max))
     prm <- bfm / apply(bfm, 1, sum)
     prob = 1 - prob
-    prci <- apply(prm, 2, quantile, probs=c(prob/2, 1 - prob/2))
+    prci <- apply(prm, 2, quantile, probs=c(prob/2, 1 - prob/2), na.rm=TRUE)
+    #colnames(prm) <- c(prob/2, 1 - prob/2)
     
     rtn$pr.ci <- t(prci)
   }
@@ -301,45 +328,146 @@ bayes.factors <- function(..., prior=NULL, boot=TRUE, n=1e3, prob=0.95) {
   return ( ((1:n-1)/n)^a )
 }
 
-#' # Calculate the beta values for Bayes Factor calculation
-#' # Points are chosen according to Gauss-Legendre quadrature rules
-#' # n: number of beta points
-#' #' @export
-#' BFbeta <- function(n) {
-#'   qr <- glqrules[[n]]
-#'   b <- (1 + qr$x) / 2
-#'   return(list(x=qr$x, b=b, w=qr$w))
-#' }
+#' Generate block bootstrap replicates of sampled power likelihoods
+#' 
+#' @param R numeric, number of bootstrap replicates
+#' @param p numeric, block length, giving as a proportion of the MCMC sample size
+#' @param mcmcf character, mcmc output file name
+#' @param betaf character, file with beta values
+#' @param preff character, prefix for files storing boot replicates
+#' 
+#' @details 
+#' Block bootstrap replicates are generated using the stationary boostrap method
+#' of Politis and Romano (1994). The replicates are stored in files named using
+#' \code{preff} and the replicate number. For example, if \code{preff = "lnL"}
+#' (the default) then the files are lnL0.txt, lnL1.txt, lnL2.txt, ..., etc, with
+#' lnL0.txt corresponding to the original log-likelihood sample. Replicates are
+#' stored within the directories corresponding to the appropriate beta values.
+#' The collection of files can grow large quickly so you may want to use a small
+#' number of replicates (say R = 10 to R = 100).
+#' 
+#' This function uses code extracted from the boot package by Canty and Ripley.
+#' 
+#' @seealso 
+#' \link{stepping.stones.boot} and \link{tsboot} (from the boot package).
+#' 
+#' @references 
+#' Politis and Romano (1994) The stationary boostrap. \emph{J. Am. Stat. Assoc.}, 
+#' 89: 1303--1313.
+#' 
+#' @export
+block.boot <- function(R, p=0.1, mcmcf="mcmc.txt", betaf="beta.txt", preff="lnL") {
+  nb <- length(scan(betaf))
+  lnLs <- list()
+  
+  # iterate over directories corresponding to the beta points
+  for (i in 1:nb) {
+    lnLs[[i]] <- na.omit(read.table(paste(i, "/", mcmcf, sep=""), header=TRUE, fill=TRUE)$lnL)
+    write.table(data.frame(lnL=lnLs[[i]]), file = paste(i, "/", preff, "0.txt", sep=""))
+    n <- n.sim <- length(lnLs[[i]])
+    
+    # iterate over bootstrap replicates
+    for (j in 1:R) {
+      ta.out <- ts.array(n=n, n.sim=n.sim, R=1, l=n*p, sim="geom", endcorr=TRUE)
+      ends <- cbind(ta.out$starts[1,], ta.out$lengths[1,])
+      inds <- apply(ends, 1L, make.ends, n)
+      inds <- if (is.list(inds)) matrix(unlist(inds)[1L:n.sim], n.sim, 1L)
+      write.table(data.frame(lnL=(lnLs[[i]])[inds]), file = paste(i, "/", preff, j, ".txt", sep=""))
+    }
+  }
+}
 
-# make.bfctlf <- function(file="mcmctree.ctl", n) {
-#   df <- BFbeta(n)
-#   betaf <- "beta"
-#   for (i in 1:n) {
-#     dir.create(as.character(i))
-#     cat(paste("BayesFactorBeta = ", df$b[i], "\n", sep=""), file=betaf)
-#     newf <- paste(i, "/", file, sep="")
-#     file.append(file1=newf, file2=c(file, betaf))
-#   }
-#   unlink(betaf)
-#   write.table(df, row.names=FALSE, file="beta.txt")
-#   # TODO: print w, x, b to a file
-#   # TODO: add option for replicate runs
-# }
+#' Estimate marginal likelihood by stepping stones on bootstrap replicates
+#' 
+#' @param R numeric, number of bootstrap replicates used
+#' @param betaf character, file with beta values
+#' @param preff character, prefix for files storing boot replicates
+#' 
+#' @details 
+#' The stepping stones method is used to calculate the marginal likelihoods on
+#' bootstrap replicates. The replicates must have been generated using  
+#' \link{block.boot}.  
+#' 
+#' @return 
+#' A list with components \code{logml}, the original log-marginal likelihood
+#' estimate, \code{logmlR}, the vector of log-marginal likelihood estimates on
+#' the boostrap replicates, \code{se} and \code{ci}, the standard error and 95\%
+#' credibility interval of \code{logml} calculated on the bootstrap replicates,
+#' and \code{b}, the beta values used.
+#' 
+#' @seealso 
+#' \link{block.boot} and \link{stepping.stones}.
+#' 
+#' @export
+stepping.stones.boot <- function(R, betaf="beta.txt", preff="lnL") {
+  b <- scan(betaf)
+  nb <- length(b)
+  lnLR <- numeric(R)
+  
+  lnLf <- paste(paste(preff, 0, ".txt", sep=""))
+  lnL0 <- stepping.stones(lnLf, betaf, FALSE)$logml
+  
+  for (j in 1:R) {
+    lnLf <- paste(paste(preff, j, ".txt", sep=""))
+    lnLR[j] <- stepping.stones(lnLf, betaf, FALSE)$logml
+  }
+  return(list(logml=lnL0, logmlR=lnLR, se=sd(lnLR), ci=quantile(lnLR, c(.025, .975)), b=b))
+}
 
-#' # Gauss-Legendre quadrature
-#' #' @export
-#' glq <- function(logml, b.df) sum(logml * b.df$w) / 2
-#'
-#' # Bayes factors
-#' # ml: marginal likelihood of models. length(ml) > 1
-#' # returns BF and posterior Pr (under uniform prior)
-#' #' @export
-#' BF <- function(logml) {
-#'   if (length(logml) < 2) stop("Provide at least two log-marginal likelihoods.")
-#'   logml0 <- max(logml)
-#'   lbf <- logml - logml0
-#'   bf <- exp(lbf)
-#'   sbf <- sum(bf)
-#'   return(list(BF=bf, Pr=bf/sbf))
-#' }
-# a = 10; x = rgamma(1e4, a, 1); y = log(x); var(y) / (a / a^2); (a / a^2)
+# Block bootstrap functions: code lifted from boot package,
+# file bootfuns.q by Canti and Ripley in
+# https://github.com/cran/boot
+# copyright (C) 1997-2001 Angelo J. Canty
+# corrections (C) 1997-2011 B. D. Ripley
+# Note, endcorr should be set to TRUE when using sim = "geom", and n.sim = n
+ts.array <- function(n, n.sim, R, l, sim, endcorr)
+{
+  #
+  #  This function finds the starting positions and lengths for the
+  #  block bootstrap.
+  #
+  #  n is the number of data points in the original time series
+  #  n.sim is the number require in the simulated time series
+  #  R is the number of simulated series required
+  #  l is the block length
+  #  sim is the simulation type "fixed" or "geom".  For "fixed" l is taken
+  #	to be the fixed block length, for "geom" l is the average block
+  #	length, the actual lengths having a geometric distribution.
+  #  endcorr is a logical specifying whether end-correction is required.
+  #
+  #  It returns a list of two components
+  #  starts is a matrix of starts, it has R rows
+  #  lens is a vector of lengths if sim="fixed" or a matrix of lengths
+  #	corresponding to the starting points in starts if sim="geom"
+  endpt <- if (endcorr) n else n-l+1
+  cont <- TRUE
+  if (sim == "geom") {
+    len.tot <- rep(0,R)
+    lens <- NULL
+    while (cont) {
+      #            inds <- (1L:R)[len.tot < n.sim]
+      temp <- 1+rgeom(R, 1/l)
+      temp <- pmin(temp, n.sim - len.tot)
+      lens <- cbind(lens, temp)
+      len.tot <- len.tot + temp
+      cont <- any(len.tot < n.sim)
+    }
+    dimnames(lens) <- NULL
+    nn <- ncol(lens)
+    st <- matrix(sample.int(endpt, nn*R, replace = TRUE), R)
+  } else {
+    nn <- ceiling(n.sim/l)
+    lens <- c(rep(l,nn-1), 1+(n.sim-1)%%l)
+    st <- matrix(sample.int(endpt, nn*R, replace = TRUE), R)
+  }
+  list(starts = st, lengths = lens)
+}
+
+make.ends <- function(a, n)
+{
+  #  Function which takes a matrix of starts and lengths and returns the
+  #  indices for a time series simulation. (Viewing the series as circular.)
+  mod <- function(i, n) 1 + (i - 1) %% n
+  if (a[2L] == 0) numeric()
+  else  mod(seq.int(a[1L], a[1L] + a[2L] - 1, length.out = a[2L]), n)
+}
