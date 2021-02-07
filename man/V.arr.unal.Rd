@@ -4,12 +4,14 @@
 \name{V.arr.unal}
 \alias{V.arr.unal}
 \title{29 3D landmarks from the skulls of 21 Vulpes vulpes specimens before Procrustes analysis}
-\format{An array with k = 29 (landmarks), q = 3 (coordinates) and s = 21 (specimens):
+\format{
+An array with k = 29 (landmarks), q = 3 (coordinates) and s = 21 (specimens):
 \describe{
   \item{k}{landmark points collected from 21 foxes specimens, 29}
   \item{q}{coordinates in 3D or 2D, 3}
   \item{s}{number of specimens, 21}
-}}
+}
+}
 \usage{
 V.arr.unal
 }

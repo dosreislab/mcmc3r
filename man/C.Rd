@@ -4,11 +4,13 @@
 \name{C}
 \alias{C}
 \title{29 3D landmarks from the skulls of 19 carnivoran specimens after Procrustes analysis}
-\format{A matrix with s = 19 rows and n = 87 columns (87/3 = 29 landmarks):
+\format{
+A matrix with s = 19 rows and n = 87 columns (87/3 = 29 landmarks):
   \describe{
   \item{s}{Rows, specimens from which landmarks were collected, 19}
   \item{n}{Columns, 87 traits (29 landmarks in 3D) after the PA}
-}}
+}
+}
 \usage{
 C
 }

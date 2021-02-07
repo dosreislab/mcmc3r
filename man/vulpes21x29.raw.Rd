@@ -4,11 +4,13 @@
 \name{vulpes21x29.raw}
 \alias{vulpes21x29.raw}
 \title{29 3D landmarks from the skulls of 21 Vulpes vulpes specimens}
-\format{A data.frame with n = 21 rows and p = 88 columns (info column + 87 coordinates):
+\format{
+A data.frame with n = 21 rows and p = 88 columns (info column + 87 coordinates):
 \describe{
   \item{n}{Rows, specimens from which landmarks were collected, 21}
   \item{p}{Columns, information about the taxa (1st column) and 87 coordinates (29 landmarks in 3D)}
-}}
+}
+}
 \usage{
 vulpes21x29.raw
 }

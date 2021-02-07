@@ -372,6 +372,7 @@ block.boot <- function(R, p=0.1, mcmcf="mcmc.txt", betaf="beta.txt", preff="lnL"
       ends <- cbind(ta.out$starts[1,], ta.out$lengths[1,])
       inds <- apply(ends, 1L, make.ends, n)
       inds <- if (is.list(inds)) matrix(unlist(inds)[1L:n.sim], n.sim, 1L)
+      else matrix(inds, n.sim, 1L)
       write.table(data.frame(lnL=(lnLs[[i]])[inds]), file = paste(i, "/", preff, j, ".txt", sep=""))
     }
   }

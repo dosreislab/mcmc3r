@@ -4,10 +4,12 @@
 \name{C.PS}
 \alias{C.PS}
 \title{Object of class procSym output by Morpho after PA}
-\format{Object procSym
+\format{
+Object procSym
   \describe{
   \item{...}{Check \code{\link[Morpho]{procSym}} for more details}
-}}
+}
+}
 \usage{
 C.PS
 }

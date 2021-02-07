@@ -4,12 +4,14 @@
 \name{sim.R}
 \alias{sim.R}
 \title{Correlation matrix for simulations}
-\format{A matrix of size n x n, where n = 100
+\format{
+A matrix of size n x n, where n = 100
 (morphological traits, the 100 simulated continuous traits):
 \describe{
   \item{n}{Number of simulated continuous traits for which the correlation values
   have been calculated, 100}
-}}
+}
+}
 \usage{
 sim.R
 }

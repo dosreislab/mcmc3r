@@ -4,10 +4,12 @@
 \name{V.PS.nov1}
 \alias{V.PS.nov1}
 \title{Object of class array output by Morpho after PA}
-\format{Object procSym
+\format{
+Object procSym
   \describe{
   \item{...}{Check \code{\link[Morpho]{procSym}} for more details}
-}}
+}
+}
 \usage{
 V.PS.nov1
 }

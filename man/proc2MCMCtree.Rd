@@ -4,8 +4,17 @@
 \alias{proc2MCMCtree}
 \title{Procrustes alignment output in MCMCtree format for Bayesian inference}
 \usage{
-proc2MCMCtree(data, popdata, sp.data, sp.popdata, filename, coords,
-  method = c("eigen", "chol"), ages, ...)
+proc2MCMCtree(
+  data,
+  popdata,
+  sp.data,
+  sp.popdata,
+  filename,
+  coords,
+  method = c("eigen", "chol"),
+  ages,
+  ...
+)
 }
 \arguments{
 \item{data}{Matrix or array, object with the data set with one specimen per

@@ -4,11 +4,13 @@
 \name{var.foxes}
 \alias{var.foxes}
 \title{Vector with the population variance of Vulpes vulpes}
-\format{A vector with i = 87 variances regarding the "Vulpes vulpes"
+\format{
+A vector with i = 87 variances regarding the "Vulpes vulpes"
 population:
 \describe{
   \item{i}{Number of variances for the foxes population, 87}
-}}
+}
+}
 \usage{
 var.foxes
 }

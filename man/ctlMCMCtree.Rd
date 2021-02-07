@@ -5,11 +5,34 @@
 \title{Generating the control file to run MCMCtree when
 using morphological data}
 \usage{
-ctlMCMCtree(filename, mol = FALSE, seed = -1, seqfile, treefile,
-  mcmcfile = "mcmc.txt", outfile = "out.txt", ndata, seqtype = 0,
-  usedata = 1, clock, RootAge, TipDate, alpha, ncatG, cleandata = 0,
-  BDparas, kappa_gamma, alpha_gamma, rgene_gamma, sigma2_gamma,
-  print = 2, burnin, sampfreq, nsample, model)
+ctlMCMCtree(
+  filename,
+  mol = FALSE,
+  seed = -1,
+  seqfile,
+  treefile,
+  mcmcfile = "mcmc.txt",
+  outfile = "out.txt",
+  ndata,
+  seqtype = 0,
+  usedata = 1,
+  clock,
+  RootAge,
+  TipDate,
+  alpha,
+  ncatG,
+  cleandata = 0,
+  BDparas,
+  kappa_gamma,
+  alpha_gamma,
+  rgene_gamma,
+  sigma2_gamma,
+  print = 2,
+  burnin,
+  sampfreq,
+  nsample,
+  model
+)
 }
 \arguments{
 \item{filename}{Character, name for the output control file.}

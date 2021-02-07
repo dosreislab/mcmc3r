@@ -4,12 +4,14 @@
 \name{carnivores19x29.raw}
 \alias{carnivores19x29.raw}
 \title{29 3D landmarks from the skulls of 19 carnivoran specimens}
-\format{A data.frame with s = 19 rows and p = 89 columns ( 2 info columns + 87 traits ):
+\format{
+A data.frame with s = 19 rows and p = 89 columns ( 2 info columns + 87 traits ):
 \describe{
   \item{s}{Rows, specimens from which landmarks were collected, 19}
   \item{p}{Columns, specimens information in 1st and 2nd column + 87 traits
    (29 landmarks in 3D)}
-}}
+}
+}
 \usage{
 carnivores19x29.raw
 }

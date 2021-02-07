@@ -4,12 +4,14 @@
 \name{C.arr.unal}
 \alias{C.arr.unal}
 \title{29 3D landmarks from the skulls of 19 carnivoran specimens before Procrustes analysis}
-\format{An array with k = 29 (landmarks), q = 3 (coordinates) and s = 19 (specimens):
+\format{
+An array with k = 29 (landmarks), q = 3 (coordinates) and s = 19 (specimens):
 \describe{
   \item{k}{landmark points collected from 19 carnivoran specimens, 29}
   \item{q}{coordinates in 3D or 2D, 3}
   \item{s}{number of specimens, 18}
-}}
+}
+}
 \usage{
 C.arr.unal
 }

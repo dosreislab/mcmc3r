@@ -4,8 +4,13 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.1] - 2020-02-24
+### Fixed
+An error in `block.boot` that caused generation of empty likelihood block 
+samples.
+
 ## [0.4.0] - 2020-12-31
-## Added 
+### Added 
 Functions `block.boot` and `stepping.stones.boot` to perform block (stationary)
 bootstrap resampling to estimate the standard error for the log-marginal 
 likelihood under the stepping stones method. Suitable for short MCMC runs for

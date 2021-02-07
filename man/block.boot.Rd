@@ -4,8 +4,7 @@
 \alias{block.boot}
 \title{Generate block bootstrap replicates of sampled power likelihoods}
 \usage{
-block.boot(R, p = 0.1, mcmcf = "mcmc.txt", betaf = "beta.txt",
-  preff = "lnL")
+block.boot(R, p = 0.1, mcmcf = "mcmc.txt", betaf = "beta.txt", preff = "lnL")
 }
 \arguments{
 \item{R}{numeric, number of bootstrap replicates}

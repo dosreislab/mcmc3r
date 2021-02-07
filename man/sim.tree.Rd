@@ -4,7 +4,8 @@
 \name{sim.tree}
 \alias{sim.tree}
 \title{Simulated 8-species tree}
-\format{An object of class "phylo" with a simulated species tree with
+\format{
+An object of class "phylo" with a simulated species tree with
 s = 8 species. It contains the following components:
 \describe{
   \item{edge}{Two-column matrix with 14 rows, where every row
@@ -15,7 +16,8 @@ s = 8 species. It contains the following components:
   \item{Nnode}{Numeric, the number of (internal) nodes}
   \item{tip.label}{A vector with the names of the tips, class
   "character"}
-}}
+}
+}
 \usage{
 sim.tree
 }

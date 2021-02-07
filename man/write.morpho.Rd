@@ -4,8 +4,16 @@
 \alias{write.morpho}
 \title{Generate a file with a morphological alignment for MCMCtree}
 \usage{
-write.morpho(M, filename, c = 0, R = diag(1, dim(M)[2]), method,
-  A = NULL, names, ages)
+write.morpho(
+  M,
+  filename,
+  c = 0,
+  R = diag(1, dim(M)[2]),
+  method,
+  A = NULL,
+  names,
+  ages
+)
 }
 \arguments{
 \item{M}{Matrix, \code{s} rows (specimens) and \code{n} morphological
