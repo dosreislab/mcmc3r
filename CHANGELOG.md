@@ -4,14 +4,19 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.2] - 2020-03-13
+### Added
+- Functions `dL`, `dB` and `dU` to calcute the fossil calibration densites used
+in MCMCtree (useful for plotting the densities).
+
 ## [0.4.1] - 2020-02-24
 ### Fixed
-An error in `block.boot` that caused generation of empty likelihood block 
+- An error in `block.boot` that caused generation of empty likelihood block 
 samples.
 
 ## [0.4.0] - 2020-12-31
 ### Added 
-Functions `block.boot` and `stepping.stones.boot` to perform block (stationary)
+- Functions `block.boot` and `stepping.stones.boot` to perform block (stationary)
 bootstrap resampling to estimate the standard error for the log-marginal 
 likelihood under the stepping stones method. Suitable for short MCMC runs for
 which the delta approximation to estimate the standard error may not work well.
