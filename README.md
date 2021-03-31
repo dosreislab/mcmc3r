@@ -6,6 +6,19 @@ You can install the package by typing in an R prompt:
 devtools::install_github("dosreislab/mcmc3r")
 ```
 
+## Plotting calibration densities
+The packge can be used to plot the L and B calibration densities used by MCMCtree. Note you can use the `sn` package (available from CRAN) to plot the Skew-normal and Skew-t calibration densities. For example, suppose you have a minimum bound calibration `L(10, .1, 1, .025)`, you can plot this with:
+
+```
+curve(dL(x, 10, .1, 1, .025), n=5e2, from=0, to=100)
+```
+
+and suppose you have the joint calibration `B(5, 10, .01, .05)`, this can be plotted with:
+
+```
+curve(dB(x, 5, 10, .01, .05), n=5e2, from=0, to=20)
+```
+
 ## Marginal likelihood calculation
 The package can be used to prepare control files for marginal likelihood calculation with MCMCtree to, for example, select the relaxed-clock model. Marginal likelihood calculation can be carried out by the thermodynamic integration or stepping-stones methods. A tutorial is available [here](https://dosreislab.github.io/2017/10/24/marginal-likelihood-mcmc3r.html).
 
