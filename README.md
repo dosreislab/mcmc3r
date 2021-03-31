@@ -13,7 +13,7 @@ The packge can be used to plot the L and B calibration densities used by MCMCtre
 curve(dL(x, 10, .1, 1, .025), n=5e2, from=0, to=100)
 ```
 
-and suppose you have the joint calibration `B(5, 10, .01, .05)`, whis can be plotted with:
+and suppose you have the joint calibration `B(5, 10, .01, .05)`, this can be plotted with:
 
 ```
 curve(dB(x, 5, 10, .01, .05), n=5e2, from=0, to=20)
