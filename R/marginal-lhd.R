@@ -378,16 +378,17 @@ block.boot <- function(R, p=0.1, mcmcf="mcmc.txt", betaf="beta.txt", preff="lnL"
   }
 }
 
-#' Estimate marginal likelihood by stepping stones on bootstrap replicates
+#' Estimate marginal likelihood from bootstrap replicates
 #' 
 #' @param R numeric, number of bootstrap replicates used
 #' @param betaf character, file with beta values
 #' @param preff character, prefix for files storing boot replicates
 #' 
 #' @details 
-#' The stepping stones method is used to calculate the marginal likelihoods on
-#' bootstrap replicates. The replicates must have been generated using  
-#' \link{block.boot}.  
+#' \code{stepping.stones.boot} and \code{gauss.quad.boot} are used to calculate
+#' the marginal likelihoods on bootstrap replicates using the stepping stones 
+#' and gaussian quadrature methods respectively. The replicates must have
+#' been generated using \link{block.boot}.  
 #' 
 #' @return 
 #' A list with components \code{logml}, the original log-marginal likelihood
@@ -397,10 +398,28 @@ block.boot <- function(R, p=0.1, mcmcf="mcmc.txt", betaf="beta.txt", preff="lnL"
 #' and \code{b}, the beta values used.
 #' 
 #' @seealso 
-#' \link{block.boot} and \link{stepping.stones}.
+#' \link{block.boot}, \link{stepping.stones} and \link{gauss.quad}.
 #' 
+#' @name logL.boot
+NULL
+
+#' @rdname logL.boot
 #' @export
 stepping.stones.boot <- function(R, betaf="beta.txt", preff="lnL") {
+  return( .logL.boot(R, betaf, preff, method="step-stones") )
+}
+
+#' @rdname logL.boot
+#' @export
+gauss.quad.boot <- function(R, betaf="beta.txt", preff="lnL") {
+  return( .logL.boot(R, betaf, preff, method="gauss-quad") )
+}
+
+.logL.boot <- function(R, betaf, preff, method) {
+  
+  if (method == "step-stones") lnL.fun <- stepping.stones
+  if (method == "gauss-quad") lnL.fun <- gauss.quad
+  
   b <- scan(betaf)
   nb <- length(b)
   lnLR <- numeric(R)
@@ -410,7 +429,7 @@ stepping.stones.boot <- function(R, betaf="beta.txt", preff="lnL") {
   
   for (j in 1:R) {
     lnLf <- paste(paste(preff, j, ".txt", sep=""))
-    lnLR[j] <- stepping.stones(lnLf, betaf, FALSE)$logml
+    lnLR[j] <- lnL.fun(lnLf, betaf, FALSE)$logml
   }
   return(list(logml=lnL0, logmlR=lnLR, se=sd(lnLR), ci=quantile(lnLR, c(.025, .975)), b=b))
 }

@@ -4,6 +4,12 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.4] - 2021-07-14
+### Added
+- Function `gauss.quad.boot` to calculate marginal likelihood on bootstrap
+replicates using the Gaussian quadrature method. Documentation for
+`gauss.quad.boot` and `stepping.stones.boot` are merged.
+
 ## [0.4.3] - 2020-03-24
 ### Added
 - Function 'dBL' to calculate the kernel density for the birth-death process
