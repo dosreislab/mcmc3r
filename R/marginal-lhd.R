@@ -167,6 +167,7 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
 #'
 #' @param mcmcf character, mcmc output file name
 #' @param betaf character, file with beta values
+#' @param se logical, whether to calculate the standard error
 #'
 #' @details
 #' The MCMC samples should be stored in a directory structure created
@@ -198,7 +199,7 @@ stepping.stones <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
 #' @author Mario dos Reis
 #'
 #' @export
-gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
+gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt", se=TRUE) {
   b <- scan(betaf)
   n <- length(b)
   lnLs <- list()
@@ -212,12 +213,15 @@ gauss.quad <- function(mcmcf="mcmc.txt", betaf="beta.txt") {
   mlnl <- sapply(lnLs, mean)
   lnml <- sum( mlnl * w / 2 )
 
-
-  for (i in 1:n) {
-    ess[i] <- coda::effectiveSize(lnLs[[i]])
-    vv[i] <- var(lnLs[[i]]) / ess[i]
+  if (se) {
+    for (i in 1:n) {
+      ess[i] <- coda::effectiveSize(lnLs[[i]])
+      vv[i] <- var(lnLs[[i]]) / ess[i]
+    }
+    vmlnl <- sum(w^2 * vv) / 4
+  } else {
+    vmlnl <- NA
   }
-  vmlnl <- sum(w^2 * vv) / 4
 
   return ( list(logml=lnml, se=sqrt(vmlnl), mean.logl=mlnl, b=b) )
 }
