@@ -4,12 +4,14 @@
 \alias{gauss.quad}
 \title{Estimate marginal likelihood by thermodynamic integration}
 \usage{
-gauss.quad(mcmcf = "mcmc.txt", betaf = "beta.txt")
+gauss.quad(mcmcf = "mcmc.txt", betaf = "beta.txt", se = TRUE)
 }
 \arguments{
 \item{mcmcf}{character, mcmc output file name}
 
 \item{betaf}{character, file with beta values}
+
+\item{se}{logical, whether to calculate the standard error}
 }
 \value{
 A list with components \code{logml}, the log-marginal likelihood estimate;

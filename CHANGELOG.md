@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.5] - 2021-07-15
+### Changed
+- Function `gauss.quad` so it now accepts a `se` argument (as for 
+`stepping.stones`). This solves a bug when running `gauss.quad.boot`.
+
 ## [0.4.4] - 2021-07-14
 ### Added
 - Function `gauss.quad.boot` to calculate marginal likelihood on bootstrap
