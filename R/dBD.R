@@ -40,7 +40,7 @@
 #' curve(dBD(x, 10, 5, .001), from=0, to=1, lty=3, add=TRUE)
 #' 
 #' # (d) lambda = 10, mu = 5, rho = 0.99 (young node ages, useful for dense
-#' sampling of diverse phylogenies):
+#' # sampling of diverse phylogenies):
 #' curve(dBD(x, 10, 5, .99), from=0, to=1, lty=4, add=TRUE)
 #' 
 #' @author
