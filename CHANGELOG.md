@@ -4,6 +4,10 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.6] - 2021-12-02
+### Fixed
+- A bug in the `dBD` example (missing comment character). 
+
 ## [0.4.5] - 2021-07-15
 ### Changed
 - Function `gauss.quad` so it now accepts a `se` argument (as for 
