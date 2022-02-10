@@ -30,9 +30,12 @@ stored within the directories corresponding to the appropriate beta values.
 The collection of files can grow large quickly so you may want to use a small
 number of replicates (say R = 10 to R = 100).
 
-This function uses code extracted from the boot package by Canty and Ripley.
+This function uses code from the boot package by Canty and Ripley.
 }
 \references{
+Álvarez-Carretero et al (2022) A species-level timeline of mammal evolution 
+integrating phylogenomic data. \emph{Nature}, 602: 263–267.
+
 Politis and Romano (1994) The stationary boostrap. \emph{J. Am. Stat. Assoc.}, 
 89: 1303--1313.
 }
