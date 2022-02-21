@@ -35,6 +35,10 @@ If using the package for marginal likelihood calculation please cite:
 
 * dos Reis et al. (2018) [Using phylogenomic data to explore the effects of relaxed clocks and calibration strategies on divergence time estimation: Primates as a test case.](https://doi.org/10.1093/sysbio/syy001) Syst. Biol., 67: 594–615.
 
+The block bootstrap used to estimate the error of marginal likelihood estimates is described in:
+
+* Álvarez-Carretero et al. (2022) [A species-level timeline of mammal evolution integrating phylogenomic data](https://doi.org/10.1038/s41586-021-04341-1) Nature, 602: 263–267.
+
 The continuous morphological models are described in:
 
 * Álvarez-Carretero et al. (2019) [Bayesian estimation of species divergence times using correlated quantitative characters.](https://doi.org/10.1093/sysbio/syz015) Syst. Biol., 68: 967–986.  
