@@ -267,7 +267,7 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
     stop( "\nPlease use an object of class \"matrix\" and dimensions \"s x n\" to convert
           into MCMCtree format\n" )
   }
-  if( class( X ) != "matrix" ){
+  if( !inherits( X, "matrix" ) ){
     stop( "\nPlease use an object of class \"matrix\" and dimensions \"s x n\" to convert
           into MCMCtree format\n" )
   }
@@ -322,7 +322,7 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
           upload your estimated correlation matrix together with \"A\"\n")
   }
   #if ( ! missing( A ) & class( A ) != "matrix" ){
-  if ( ! is.null( A ) & class( A ) != "matrix" ){
+  if ( ! is.null( A ) & !inherits( A, "matrix" ) ){
     stop( "\nObject \"A\" needs to be of class \"matrix\"\n" )
   }
     # [ DISABLED BY NOW. IT MIGHT BE TOO TIME CONSUMING WITH LARGE MATRICES ]
@@ -658,7 +658,7 @@ matrix2array <- function( X, coords = c( 2, 3 ) ){
     stop( "\nPlease provide an object of class \"matrix\" with \"s x n\" dimensions, 's' specimens and 'n' characters\n" )
   }
 
-  if ( class( X ) != "matrix" ){
+  if ( !inherits( X, "matrix" )){
     stop( "\nPlease use an object of class \"matrix\"\n" )
   }
 
@@ -1196,7 +1196,7 @@ sim.morpho <- function( tree, n , c = 0, R, ... ) {
 # and symmetric
 .checkCorrMat <- function( R, n ){
 
-  if ( class( R ) != "matrix" ){
+  if ( !inherits( R, "matrix" ) ){
     stop( "\nPlease use a correlation matrix of class \"matrix\"\n" )
   }
 
@@ -1582,7 +1582,7 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
   pop.names <- NULL
 
   # If data and/or popdata are a matrix, convert them into an array
-  if ( class( data ) == "matrix" ){
+  if ( inherits( data, "matrix" ) ){
     data    <- mcmc3r::matrix2array( X = data, coords = coords )
     if( ! is.null( row.names( data ) ) ){
       dat.names <- row.names( data )
@@ -1596,7 +1596,7 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
       dat.names <- paste( "Specimen_", seq(1:length(dimnames( data )[[3]])), sep = "" )
     }
   }
-  if( class( popdata ) == "matrix" ){
+  if( inherits( popdata, "matrix" ) ){
     popdata <- mcmc3r::matrix2array( X = popdata, coords = coords )
     if( ! is.null( row.names( popdata ) ) ){
       pop.names <- row.names( popdata )
@@ -1673,10 +1673,10 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for arguments \"data\" and \"popdata\"\n" )
   }
 
-  if ( class( data ) != "matrix" & class( data ) != "array" ){
+  if ( !inherits( data, "matrix" ) & class( data ) != "array" ){
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"data\"\n" )
   }
-  if ( class( popdata ) != "matrix" & class( popdata ) != "array" ){
+  if ( !inherits( popdata, "matrix" ) & class( popdata ) != "array" ){
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"popdata\"\n" )
   }
 
