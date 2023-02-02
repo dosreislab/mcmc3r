@@ -4,6 +4,12 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.4.7] - 2023-02-02
+### Fixed
+- An error was returned in several instances of testing input where class(x) 
+was used to check matrices due to a new behaviour of classes in matrices from 
+R > v4.x. Now `inherits` is used to test matrix classes instead of `class`.
+
 ## [0.4.6] - 2021-12-02
 ### Fixed
 - A bug in the `dBD` example (missing comment character). 
@@ -21,7 +27,7 @@ replicates using the Gaussian quadrature method. Documentation for
 
 ## [0.4.3] - 2020-03-24
 ### Added
-- Function 'dBL' to calculate the kernel density for the birth-death process
+- Function `dBL` to calculate the kernel density for the birth-death process
 with species sampling.
 
 ## [0.4.2] - 2020-03-13
