@@ -16,4 +16,4 @@ Imports:
 	ape, corpcor, Morpho, Rdpack, coda
 RdMacros:
 	Rdpack
-RoxygenNote: 7.1.1
+RoxygenNote: 7.2.0
