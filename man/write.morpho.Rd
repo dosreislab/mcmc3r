@@ -37,7 +37,7 @@ but not \code{method} (see details).}
 \item{names}{(Optional) list or character, species name included in the morphological
 alignment (see examples B and C).}
 
-\item{ages}{(Optional) list or character, ages of the species included in the
+\item{ages}{(Optional) list or numeric, ages of the species included in the
 morphological alignment (see example C).}
 }
 \description{

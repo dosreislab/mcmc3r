@@ -14,6 +14,7 @@ mcmc2densitree(
   y.offset = 0,
   pfract = 0.1,
   plot.labels = TRUE,
+  cex.lab = 1,
   axis = TRUE,
   add = FALSE,
   tip.ages = NULL
@@ -50,6 +51,8 @@ create a new plot.}
 \item{tip.ages}{numeric, the ages of the tips, with the most recent tip
 having age zero, and the oldest tip having the largest age. If \code{NULL},
 tips are assumed to have all age zero.}
+
+\item{cex.labels}{numeric, the relative character size for the tip labels.}
 }
 \description{
 Plot a densi-tree from an MCMC sample from a BPP or MCMCTree analysis
@@ -62,6 +65,22 @@ The function will reduce the MCMC sample to \code{dim(mcmc)[1] *
 
   The \code{tree} must be rooted, strictly bifurcating, and be the same tree
   used to genarate the BPP (A00) or MCMCTree MCMC samples.
+}
+\examples{
+data(microcebus)
+mcmc2densitree(microcebus$tree, microcebus$mcmc, time.name="tau_", thin=0.05,
+ alpha=0.01, col="blue")
+ title(xlab="Distance (substitutions per site)")
+
+# data(hominids) TODO: Fix this example (add msc2time.t function)
+# Calibrate the hominid phylogeny with a uniform fossil calibration of
+# between 6.5 to 10 Ma for the human-chimp divergence, and plot the
+# calibrated sample
+#calmsc <- msc2time.t(mcmc=hominids$mcmc, node="7humanchimp", calf=runif,
+#   min=6.5, max=10)
+# mcmc2densitree(hominids$tree, calmsc, "t_", thin=0.05, alpha=0.01)
+# title(xlab="Divergence time (Ma)")
+
 }
 \author{
 Mario dos Reis

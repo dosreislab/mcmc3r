@@ -4,6 +4,18 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.0] - 2023-XXXX
+### Added
+- Function `mcmc2densitree` to plot densitrees using the MCMC output from either
+MCMCtree or BPP.
+- `microcebus` and `hominid` BPP A00 MCMC datasets.
+- Carnivora data to `misc/carnivora`, suitable for reproducing MCMC sampling 
+of divergence times using molecular and morphometric data with MCMCtree.
+
+### Changed
+- The analysis of carnivores vignette, `Reproduce_Carnivora_analysis.Rmd`, to 
+simplify the text and to add MCMC sampling using MCMCtree.
+
 ## [0.4.7] - 2023-02-02
 ### Fixed
 - An error was returned in several instances of testing input where class(x) 

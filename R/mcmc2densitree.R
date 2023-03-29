@@ -15,6 +15,7 @@
 #'   the tree and the labels. Use large values if your tip labels are long.
 #' @param plot.labels logical, whether to plot the tip labels. Ignored if
 #'   \code{add = TRUE}.
+#' @param cex.labels numeric, the relative character size for the tip labels.
 #' @param axis logical, whether to plot the x axis.
 #' @param add logical, if TRUE add the trees to an existing plot, otherwise
 #'   create a new plot.
@@ -32,12 +33,26 @@
 #'
 #' @author Mario dos Reis
 #'
-# TODO: Add examples
+#' @examples
+#' data(microcebus)
+#' mcmc2densitree(microcebus$tree, microcebus$mcmc, time.name="tau_", thin=0.05,
+#'  alpha=0.01, col="blue")
+#'  title(xlab="Distance (substitutions per site)")
+#'
+#' # data(hominids) TODO: Fix this example (add msc2time.t function)
+#' # Calibrate the hominid phylogeny with a uniform fossil calibration of
+#' # between 6.5 to 10 Ma for the human-chimp divergence, and plot the
+#' # calibrated sample
+#' #calmsc <- msc2time.t(mcmc=hominids$mcmc, node="7humanchimp", calf=runif,
+#' #   min=6.5, max=10)
+#' # mcmc2densitree(hominids$tree, calmsc, "t_", thin=0.05, alpha=0.01)
+#' # title(xlab="Divergence time (Ma)")
 #'
 #' @export
 # FIXME: I'm very slow
 mcmc2densitree <- function(tree, mcmc, time.name, thin, col="blue", alpha=1, y.offset=0,
-                           pfract = 0.1, plot.labels = TRUE, axis=TRUE, add=FALSE, tip.ages=NULL) {
+                           pfract = 0.1, plot.labels = TRUE, cex.lab = 1,
+                           axis=TRUE, add=FALSE, tip.ages=NULL) {
   ns <- tree$Nnode + 1
   if (is.null(tip.ages)) tip.ages <- rep(0, ns)
   ti <- grep(time.name, names(mcmc))
@@ -50,7 +65,7 @@ mcmc2densitree <- function(tree, mcmc, time.name, thin, col="blue", alpha=1, y.o
     xend <- max(mcmc[ii,ti])
     xmin <- - xend * pfract
     plot(rep(0, 2*ns - 1), ycoo, xlim=c(xend, xmin), ylim=c(0, max(ycoo)), ty='n', axes=FALSE, xlab=NA, ylab=NA)
-    if (plot.labels) text(x=tip.ages, y=ycoo[1:ns], tree$tip.label, pos=4)
+    if (plot.labels) text(x=tip.ages, y=ycoo[1:ns], tree$tip.label, pos=4, cex=cex.lab)
     if (axis) axis(1)
   }
 

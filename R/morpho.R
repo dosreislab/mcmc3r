@@ -26,7 +26,7 @@
 #' @param names (Optional) list or character, species name included in the morphological
 #' alignment (see examples B and C).
 #'
-#' @param ages (Optional) list or character, ages of the species included in the
+#' @param ages (Optional) list or numeric, ages of the species included in the
 #' morphological alignment (see example C).
 #'
 #' @details
