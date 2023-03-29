@@ -1,7 +1,7 @@
 Package: mcmc3r
 Type: Package
 Title: Tools to work with MCMCTree
-Version: 0.5.0
+Version: 0.5.1
 Date: 2017-05-18
 Authors@R: person("Mario", "dos Reis", email = "mariodosreis@gmail.com", role = c("aut", "cre"))
 	person("Sandra", "Alvarez-Carretero", email = "sandra.ac93@gmail.com", role = c("aut", "cre"))

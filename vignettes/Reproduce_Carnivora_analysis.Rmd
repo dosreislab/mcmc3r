@@ -272,8 +272,10 @@ the `method = "chol"`(Cholesky decomposition) or `method = "eigen"` (eigen decom
    * **ages**   
      Vector or list with the ages of the specimens. Make sure each age corresponds to the right specimen as it should be in the same order than in vector `names`. In this tutorial, we use a numeric vector. Note extant species should have age `0` while extinct species should have ages `> 0`.   
      
+Before running the commands below, use the `setwd` command in R to set your working directory to the `carnivores/` directory you created earlier.
 
-```{r}
+```R
+# setwd("~/carnivores/") # use the right directory path
 # Create a vector (although it can also be a list) with the specimens names
 names <- c( "Ael_sp.", "Can_dir", "Epi_hay", "Hes_sp.",
             "Par_jos", "Tom_sp.", "Enh_pah", "Cuo_alp",
@@ -312,7 +314,7 @@ Cuo_alp^35.56       25.9516979794982 12.9776718002656 11.2662021565935 15.972699
 
 The first line has the number of species (19), the number of characters (87), a string indicating this is a morphological alignment (M), the standardised population noise (1) and the log-determinant of the correlation matrix (-17.44). This is then followed by the species names and transformed landmark coordinates. Note the species ages have been recoded. Do not worry about this.
 
-The next step is to merge the morphological alignment (which contains extant and extinct species) with a molecular alignment (that only contains extant species). We have already prepared such combined file, which you should have already downloaded from [GitHub]((https://github.com/dosreislab/mcmc3r/tree/master/misc/carnivores). Go to the `carnivores/` directory you created to store the data. There you will see file `morph_mol.aln`, containing the morphological and molecular alignments as two separate partitions. You can use a text editor to open the file. The top block is the morphological alignment, like the one shown above (although you may see some small numerical differences due to recent updates to the Procrustes algorithm). The bottom block is the molecular alignment of 3rd positions for mitochondrial genes.
+The next step is to merge the morphological alignment (which contains extant and extinct species) with a molecular alignment (that only contains extant species). We have already prepared such combined file, which you should have already downloaded from [GitHub](https://github.com/dosreislab/mcmc3r/tree/master/misc/carnivores). Go to the `carnivores/` directory you created to store the data. There you will see file `morph_mol.aln`, containing the morphological and molecular alignments as two separate partitions. You can use a text editor to open the file. The top block is the morphological alignment, like the one shown above (although you may see some small numerical differences due to recent updates to the Procrustes algorithm). The bottom block is the molecular alignment of 3rd positions for mitochondrial genes.
 
 File `mcmctree.ctl` contains the instructions required by MCMCtree to carry out MCMC sampling of divergence times. You can open this file with a text editor:
 
@@ -387,10 +389,10 @@ t_n20         49.5139 (41.5294, 61.8787) (40.7484, 60.0179)
 
 Note the values in your `out.txt` file may look different as MCMC uses random sampling to estimates parameters in the posterior distribution.
 
-File `mcmc.txt`, which contains the raw MCMC output, can be loaded into R. Use the `setwd` function in R to set your working directory to `carnivores/`. Then, from within R
+File `mcmc.txt`, which contains the raw MCMC output, can be loaded into R (Remember you must have your working directory  set to `carnivores/`):
 
 ```R
-# setwd("~/carnivores/") # use the right directory path
+# setwd("~/carnivores/") # make sure you are in the right directory!
 # load the MCMC file
 mcmc = read.table("mcmc.txt", head=TRUE)
 # create a density plot for the root's age:
@@ -414,11 +416,19 @@ tt = ape::read.tree("carnivores.tree")
 back.ages = as.numeric(unlist(strsplit(tt$tip.label, "\\^"))[seq(from=2, to=2*19, by=2)])
 back.ages = max(back.ages) - back.ages
 # plot the densitree (note this command is may be slow):
-mcmc3r::mcmc2densitree(tt, mcmc, "t_", 0.025, alpha=0.1, tip.ages=back.ages, cex=.8)
+mcmc3r::mcmc2densitree(tt, mcmc, "t_", 0.025, alpha=0.1, tip.ages=back.ages, cex=.8, pfrac=.2)
 title(xlab="Million years ago")
 ```
 
+<p align="center">
+  <img width="680" src="densitree.jpg">
+</p>
+
 MCMCtree also generated a `FigTree.tre` file suitable for plotting the timetree with [FigTree](http://tree.bio.ed.ac.uk/software/figtree/). Note there is currently a bug in MCMCtree which adds a `#1.000000` or `#2.000000` within the tree in the `FigTree.tre` file. These tags must be removed, using a text editor, before loading the file into FigTree.
+
+<p align="center">
+  <img width="620" src="figtree.jpg">
+</p>
 
 **Exercise 1:** Because the MCMCtree is stochastic, there is no guarantee that the MCMC sample has converged to the posterior distribution. Rename files `mcmc.txt` and `out.txt` as `mcmc1.txt` and `out2.txt` respectively. Then run `mcmctree` again. Rename the newly generated files as `mcmc2.txt` and `out2.txt`. Now compare the two sets of files. For example, you can look at the posterior means and 95% CIs at the end of the `out1.txt` and `out2.txt` files, or you can plot the densities of the node age samples in R. Do the results look similar? If not, then the MCMC samples have not converged.
 
