@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.2] - XXX
+### Added
+- Function for ancestral reconstruction [details]
+- Directory `misc/ape4s`, and moved all ape4s files into it.
+
 ## [0.5.1] - 2023-03-30
 ### Added
 - Function `mcmc2densitree` to plot densitrees using the MCMC output from either
