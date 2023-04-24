@@ -430,6 +430,34 @@ MCMCtree also generated a `FigTree.tre` file suitable for plotting the timetree 
   <img width="620" src="figtree.jpg">
 </p>
 
+Finally, we can use the MCMC sample from MCMCtree to generate ancestral reconstructions of the landmarks for all nodes in the phylogeny.
+
+```r
+# First we need to make sure the taxa names in C match exactly those in the tree
+# (which are slightly different as they contain the taxa ages)
+i <- pmatch(rownames(C), tt$tip.label)
+rownames(C) <- tt$tip.label[i]
+recM <- mcmc2anc(tree=tt, M=C, mcmc=mcmc, time.name="t_", rate.name="r_g1_", 
+                 tip.ages=back.ages)
+
+x <- seq(1, 87, by=3); y <- seq(2, 87, by=3)
+# Plot landmarks for the 19 carnivores:
+plot(C[,x], C[,y], pch='+', cex=.5, xlab="X coords", ylab=" Y coords")
+
+# plot ancestral reconstruction at the root (node 20):
+points(recM["20",x], recM["20",y], pch=19, col="red")
+
+# mean shape
+mS <- apply(C, 2, mean)
+points(mS[x], mS[y], pch=19, col="blue")
+```
+
+<p align="center">
+  <img width="550" src="ancrec.jpg">
+</p>
+
+We hope you enjoyed the tutorial!
+
 **Exercise 1:** Because the MCMCtree is stochastic, there is no guarantee that the MCMC sample has converged to the posterior distribution. Rename files `mcmc.txt` and `out.txt` as `mcmc1.txt` and `out2.txt` respectively. Then run `mcmctree` again. Rename the newly generated files as `mcmc2.txt` and `out2.txt`. Now compare the two sets of files. For example, you can look at the posterior means and 95% CIs at the end of the `out1.txt` and `out2.txt` files, or you can plot the densities of the node age samples in R. Do the results look similar? If not, then the MCMC samples have not converged.
 
 **Exercise 2:** The MCMC above was rather short, and it is unlikely that the values converged. Open file `mcmctree.ctl` and change the following lines as shown here: `burnin = 5000`, `sampfreq = 50`, `nsample = 20000`. Then run MCMCtree again. This new analysis will take much longer, over 15 hours, which is normal in phylogenetic MCMC sampling. If you create two directories in your computer, you can run two analyses in parallel overnight. The next day look at the results in the `out.txt` files. The results should now be much more similar, indicating convergence.

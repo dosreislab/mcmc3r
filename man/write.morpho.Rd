@@ -28,14 +28,14 @@ If not provided, \code{c = 0} (no population noise).}
 (see details). If not provided, \code{R = I} (no character correlation).}
 
 \item{method}{(Optional) character, either \code{"eigen"} or
-\code{"col"}, method used to decompose the inverse of the shrinkage
+\code{"chol"}, method used to decompose the inverse of the shrinkage
 correlation matrix. Requires \code{R} (see details).}
 
 \item{A}{(Optional) matrix, decomposed matrix. Requires \code{R}
 but not \code{method} (see details).}
 
-\item{names}{(Optional) list or character, species name included in the morphological
-alignment (see examples B and C).}
+\item{names}{(Optional) list or character, species name included in the
+morphological alignment (see examples B and C).}
 
 \item{ages}{(Optional) list or numeric, ages of the species included in the
 morphological alignment (see example C).}

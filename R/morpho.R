@@ -17,14 +17,14 @@
 #' (see details). If not provided, \code{R = I} (no character correlation).
 #'
 #' @param method (Optional) character, either \code{"eigen"} or
-#' \code{"col"}, method used to decompose the inverse of the shrinkage
+#' \code{"chol"}, method used to decompose the inverse of the shrinkage
 #' correlation matrix. Requires \code{R} (see details).
 #'
 #' @param A (Optional) matrix, decomposed matrix. Requires \code{R}
 #' but not \code{method} (see details).
 #'
-#' @param names (Optional) list or character, species name included in the morphological
-#' alignment (see examples B and C).
+#' @param names (Optional) list or character, species name included in the
+#'   morphological alignment (see examples B and C).
 #'
 #' @param ages (Optional) list or numeric, ages of the species included in the
 #' morphological alignment (see example C).
@@ -492,16 +492,15 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
   # Cholesky decomposition:
   # R = L %*% U = L %*% t( L )    = t( U ) %*% U
   # R^-1 = t( L^-1 ) %*% L^-1     = U^-1 %*% t( U^-1 )
-  # R^-1 = t( A ) %*% A           = A %*% t( A )
+  # R^-1 = t( A ) %*% A; A = L^-1; tA = U^-1        
 
   U <- chol( R )
-  A <- backsolve( U, diag( dim( U )[1] ) )
+  tA <- backsolve( U, diag( dim( U )[1] ) )
 
-  # Return inverse of upper triangular matrix ( U^-1 = A )
-  return( A )
+  # Return inverse of upper triangular matrix ( U^-1 = tA )
+  return( tA ) 
 
 }
-
 
 # Decompose the correlation matrix using the eigen decomposition
 .CalcEigen <- function( R ){

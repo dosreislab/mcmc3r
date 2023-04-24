@@ -4,10 +4,14 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [0.5.2] - XXX
+## [0.5.2] - 2023-04-24
 ### Added
-- Function for ancestral reconstruction [details]
+- Function `mcmc2anc` for ancestral character reconstruction from an MCMC sample.
 - Directory `misc/ape4s`, and moved all ape4s files into it.
+
+## Changed
+- The analysis of carnivores vignette, `Reproduce_Carnivora_analysis.Rmd`, to 
+streamline the text and add an example of ancestral reconstruction.
 
 ## [0.5.1] - 2023-03-30
 ### Added
