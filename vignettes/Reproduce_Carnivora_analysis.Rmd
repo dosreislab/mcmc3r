@@ -30,7 +30,7 @@ The tutorial is divided into the following steps:
   4. Carry out MCMC divergence dating with MCMCtree using morphometric and molecular data  
   5. Visualise and validate divergence dating results  
   
-Before starting the tutorial, make sure you have the `mcmc3r` R package and its dependencies installed. Steps 4 and 5 require that you: (1) download and install the command line version of [MCMCTree from PAML](https://bit.ly/ziheng-paml) (make sure MCMCtree is in your system's PATH, as explained in PAML's website), and (2) download the [tree, alignment and control files](https://github.com/dosreislab/mcmc3r/tree/master/misc/carnivores) necessary to reproduce the analysis with MCMCtree, and save these files to a directory called `carnivores/`.
+Before starting the tutorial, make sure you have the `mcmc3r` R package and its dependencies installed. Steps 4 and 5 require that you: (1) download and install the command line version of [MCMCTree from PAML](https://bit.ly/ziheng-paml) (make sure MCMCtree is in your system's PATH, as explained in PAML's website), and (2) download the [tree, alignment and control files](https://github.com/dosreislab/mcmc3r/tree/master/misc/carnivores) necessary to reproduce the analysis with MCMCtree, and save these files to a directory called `carnivores/`. This tutorial was tested with PAML version 4.9j, and thus we recommend you use this version when doing the tutorial excercises.
 
 ## 1. Collect and process morphological data
 
