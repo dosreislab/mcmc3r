@@ -456,6 +456,14 @@ points(mS[x], mS[y], pch=19, col="blue")
   <img width="550" src="ancrec.jpg">
 </p>
 
+The reconstruction is stored as a matrix object. We can convert it to an array for compatibility with morphometrics software. This also allows 3D plots using the rgl package.
+
+```r
+recA <- matrix2array(recM, 3)
+options(rgl.printRglwidget = TRUE)
+rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
+```
+
 We hope you enjoyed the tutorial!
 
 **Exercise 1:** Because the MCMCtree is stochastic, there is no guarantee that the MCMC sample has converged to the posterior distribution. Rename files `mcmc.txt` and `out.txt` as `mcmc1.txt` and `out2.txt` respectively. Then run `mcmctree` again. Rename the newly generated files as `mcmc2.txt` and `out2.txt`. Now compare the two sets of files. For example, you can look at the posterior means and 95% CIs at the end of the `out1.txt` and `out2.txt` files, or you can plot the densities of the node age samples in R. Do the results look similar? If not, then the MCMC samples have not converged.

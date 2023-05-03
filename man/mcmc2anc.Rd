@@ -43,6 +43,7 @@ Newick representation. Taxon names in \code{tree} and \code{M} must match.
 }
 \examples{
 data(carnivores) 
+# calculate tip ages correctly, as they're needed by the function:
 back.ages = as.numeric(unlist(strsplit(carnivores$tree$tip.label, "\\\\^"))[seq(from=2, to=2*19, by=2)])
 back.ages = max(back.ages) - back.ages 
 C <- carnivores$C.proc
@@ -58,6 +59,12 @@ points(recM["20",x], recM["20",y], pch=19, col="red")
 # mean shape
 mS <- apply(carnivores$C.proc, 2, mean)
 points(mS[x], mS[y], pch=19, col="blue")
+
+# Convert reconstruction to an array, as is the standard in
+# morphometrics software
+recA <- matrix2array(recM, 3)
+options(rgl.printRglwidget = TRUE)
+rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
 
 }
 \references{
