@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.3] - 2023-12-07
+### Added
+- Functions `pL` and `qL` to calculate the probability and quantile functions
+for the minim bound (truncated-Cauchy) calibrations.
+
 ## [0.5.2] - 2023-04-24
 ### Added
 - Function `mcmc2anc` for ancestral character reconstruction from an MCMC sample.

@@ -3,11 +3,17 @@
 \name{calibrations}
 \alias{calibrations}
 \alias{dL}
+\alias{pL}
+\alias{qL}
 \alias{dB}
 \alias{dU}
 \title{Calibration densities}
 \usage{
 dL(x, tL, p = 0.1, c = 1, pL = 0.025)
+
+pL(q, tL, p = 0.1, c = 1, pL = 0.025)
+
+qL(prob, tL, p = 0.1, c = 1, pL = 0.025)
 
 dB(x, tL, tU, pL = 0.025, pU = 0.025)
 
@@ -24,18 +30,24 @@ dU(x, tU, pU = 0.025)
 
 \item{pL}{numeric, minimum probability bound}
 
+\item{q, }{numeric, quantile}
+
+\item{prob, }{numeric probability}
+
 \item{tU}{numeric, maximum age}
 
 \item{pU}{numeric, maximum probability bound}
 }
 \value{
-A vector of probability densities.
+A vector of density, probability, or quantile values as appropriate.
 }
 \description{
-Density functions for calibrations used in MCMCtree
+Density, distribution, and quantile functions for calibrations 
+used in MCMCtree.
 }
 \details{
-Calculates the densities for the minimum (dL), joint (dB) and
+Calculates the density, distribution and quantile functions for the
+  minimum (dL) calibration, and the density function for the joint (dB) and
   maximum (dU) calibration bounds as implemented in MCMCtree. See Yang and
   Rannala (2007) and Inoue et al. (2010) for details.
 }
@@ -48,6 +60,10 @@ curve(dB(x, 1, 6), from=0, to=10, n=5e2)
 
 # Plot a maximum bound calibration density:
 curve(dU(x, 6), from=0, to=10, n=5e2)
+
+# Probability and quantile function for minimum bound (or truncated-Cauchy):
+qv <- pL(0:20, tL=1)
+qL(qv, tL=1)
 
 }
 \references{

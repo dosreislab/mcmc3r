@@ -1,8 +1,11 @@
 #' Calibration densities
 #' 
-#' @description Density functions for calibrations used in MCMCtree
+#' @description Density, distribution, and quantile functions for calibrations 
+#' used in MCMCtree.
 #' 
 #' @param x  numeric, vector of quantiles
+#' @param q, numeric, quantile
+#' @param prob, numeric probability
 #' @param tL numeric, minimum age
 #' @param tU numeric, maximum age
 #' @param p  numeric, mode parameter for truncated Cauchy
@@ -10,11 +13,12 @@
 #' @param pL numeric, minimum probability bound
 #' @param pU numeric, maximum probability bound
 #' 
-#' @details Calculates the densities for the minimum (dL), joint (dB) and
+#' @details Calculates the density, distribution and quantile functions for the
+#'   minimum (dL) calibration, and the density function for the joint (dB) and
 #'   maximum (dU) calibration bounds as implemented in MCMCtree. See Yang and
 #'   Rannala (2007) and Inoue et al. (2010) for details.
 #' 
-#' @return A vector of probability densities.
+#' @return A vector of density, probability, or quantile values as appropriate.
 #' 
 #' @references 
 #' Yang and Rannala. (2006) Bayesian Estimation of Species Divergence Times
@@ -34,6 +38,10 @@
 #' 
 #' # Plot a maximum bound calibration density:
 #' curve(dU(x, 6), from=0, to=10, n=5e2)
+#' 
+#' # Probability and quantile function for minimum bound (or truncated-Cauchy):
+#' qv <- pL(0:20, tL=1)
+#' qL(qv, tL=1)
 #' 
 #' @author Mario dos Reis
 #'
@@ -61,6 +69,27 @@ dL <- function(x, tL, p=0.1, c=1, pL=0.025) {
   
   return(dx)
 }
+
+# probability function
+#' @rdname calibrations
+#' @export
+pL <- Vectorize(
+  function(q, tL, p=0.1, c=1, pL=0.025) {
+    integrate(dL, lower=0, upper=q, tL=tL, p=p, c=c, pL=pL)$value
+  }
+)
+
+# quantile function
+#' @rdname calibrations
+#' @export
+qL <- Vectorize(
+  function(prob, tL, p=0.1, c=1, pL=0.025) {
+    uniroot(function(x) (pL(x, tL=tL, p=p, c=c, pL=pL) - prob), 
+            int = c(0, tL * 10), extendInt="upX")$root
+  }
+)
+
+# TODO: Add functions pB, qB, pU, and qU
 
 # Joint bounds: (see Yang and Rannala 2006)
 # We use exponentials here for easier plotting
