@@ -4,6 +4,10 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.4] - 2024-02-09
+### Added
+- Function `mcmc.sum` to calculate summary statistics on MCMCtree's output.
+
 ## [0.5.3] - 2023-12-07
 ### Added
 - Functions `pL` and `qL` to calculate the probability and quantile functions
