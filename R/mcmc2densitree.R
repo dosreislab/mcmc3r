@@ -15,7 +15,7 @@
 #'   the tree and the labels. Use large values if your tip labels are long.
 #' @param plot.labels logical, whether to plot the tip labels. Ignored if
 #'   \code{add = TRUE}.
-#' @param cex.labels numeric, the relative character size for the tip labels.
+#' @param cex.lab numeric, the relative character size for the tip labels.
 #' @param axis logical, whether to plot the x axis.
 #' @param add logical, if TRUE add the trees to an existing plot, otherwise
 #'   create a new plot.

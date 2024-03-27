@@ -118,7 +118,7 @@ otherwise do not pass further arguments to \code{\link{proc2MCMCtree}} and let i
 \code{\link[Morpho]{procSym}} in default mode.
 }
 \examples{
-
+\dontrun{
 # A. Use the unaligned, but processed, carnivoran data (data = C.mat.unal) and
 #    vulpes data (popdata = V.mat.unal) to obtain a morphological alignment.
 #    The fox specimen that is common in V.mat.unal and C.mat.unal is the
@@ -153,6 +153,7 @@ otherwise do not pass further arguments to \code{\link{proc2MCMCtree}} and let i
      obj.aln <- proc2MCMCtree( data = C.mat.unal, popdata = V.mat.unal, sp.data = 13,
                                sp.popdata = 1, filename = "./seqfile.aln", coords = 3,
                                method = c("chol"), pairedLM = pairedLM, ages = ages )
+}
 
 }
 \seealso{

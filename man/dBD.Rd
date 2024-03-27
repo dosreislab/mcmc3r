@@ -7,19 +7,25 @@
 dBD(x, lambda, mu, rho, t1 = 1)
 }
 \arguments{
-\item{lambda}{numeric, birth rate}
+\item{x}{numeric, x values for which the density will be plotted. This 
+`dbd` function is passed to R function `curve` via variable `expr`. 
+The values you type as arguments for variables `from` and `to` in
+function `curve` will be used by variable `x` in this function 
+(see examples for details).}
 
-\item{mu}{numeric, death rate}
+\item{lambda}{numeric, birth rate.}
 
-\item{rho}{numeric, proportion of species sampled}
+\item{mu}{numeric, death rate.}
 
-\item{t1}{numeric, age of the phylogeny's root}
+\item{rho}{numeric, proportion of species sampled.}
+
+\item{t1}{numeric, age of the phylogeny's root.}
 }
 \value{
 A numeric vector of probability densities.
 }
 \description{
-Kernel density function for the birth-death proces with species sampling.
+Kernel density function for the birth-death process with species sampling.
 }
 \details{
 MCMCtree uses the BD kernel to generate the prior on node ages for those

@@ -1,19 +1,17 @@
 Package: mcmc3r
 Type: Package
-Title: Tools to work with MCMCTree
-Version: 0.5.4
-Date: 2017-05-18
+Title: Tools to work with MCMCtree
+Version: 0.5.5
+Date: 2024-03-27
 Authors@R: person("Mario", "dos Reis", email = "mariodosreis@gmail.com", role = c("aut", "cre"))
 	person("Sandra", "Alvarez-Carretero", email = "sandra.ac93@gmail.com", role = c("aut", "cre"))
 Description: Tools to work with MCMCtree, a program for Bayesian inference of species divergence times.
 License: MIT + file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
-Depends: R (>= 2.10)
+Depends: R (>= 3.5.0)
 Suggests: knitr, rmarkdown, testthat (>= 0.11.0)
 VignetteBuilder: knitr
 Imports:
-	ape, corpcor, Morpho, Rdpack, coda
-RdMacros:
-	Rdpack
-RoxygenNote: 7.2.0
+	ape, corpcor, coda
+RoxygenNote: 7.3.1

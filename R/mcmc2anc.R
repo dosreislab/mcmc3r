@@ -38,11 +38,12 @@
 #' A n x k matrix with the ancestral reconstruction for the k characters at the
 #' n internal nodes of the phylogeny.
 #' 
-#' @examples 
+#' @examples
 #' data(carnivores) 
 #' # calculate tip ages correctly, as they're needed by the function:
-#' back.ages = as.numeric(unlist(strsplit(carnivores$tree$tip.label, "\\^"))[seq(from=2, to=2*19, by=2)])
-#' back.ages = max(back.ages) - back.ages 
+#' tips_info <- strsplit(carnivores$tree$tip.label, "\\^" )
+#' back.ages <- as.numeric(unlist(tips_info)[seq(from=2, to=2*19, by=2)])
+#' back.ages <- max(back.ages) - back.ages 
 #' C <- carnivores$C.proc
 #' rownames(C) <- rownames(carnivores$M)
 #' recM = mcmc2anc(carnivores$tree, C, mcmc=carnivores$mcmc, time.name="t_", 
@@ -59,10 +60,11 @@
 #' 
 #' # Convert reconstruction to an array, as is the standard in
 #' # morphometrics software
+#' \dontrun{
 #' recA <- matrix2array(recM, 3)
 #' options(rgl.printRglwidget = TRUE)
 #' rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
-#' 
+#' }
 #' @export
 mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL) {
   # tt must be rooted and strictly bifurcating

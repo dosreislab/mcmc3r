@@ -4,6 +4,52 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.5] - 2024-03-27
+
+### Removed
+
+- Update `DESCRIPTION` file:
+  - Remove `Morpho` and `Rdpack` from `Import`.
+  
+### Fixed
+
+- Update `Morpho.R` script:
+  - Check whether users have `Morpho` installed when running function
+   `proc2MCMCtree`, stop if not -> error and warning solved.
+  - Update `.checkData` and `.checkArr` functions so that checks with `class()`
+    do not raise warnings -> warning solved.
+- Update `calibrations.R` file:
+  - Remove additional parenthesis in line 45 (i.e. from `pv <- pL(qv, tL=1))`
+    to `pv <- pL(qv, tL=1))`) -> error solved.
+- Update `dBD.R` script:
+  - Define parameter `x` as `@param` -> warning solved.
+- Update `mcmc2densitree`:
+  - Change `cex.labels` to `cex.lab` (line 18, `@param` section) as the latter is
+    used in the function -> warning solved.
+
+### Changed
+
+- Update `DESCRIPTION` file:
+  - Upgrade `RoxygenNote` to 7.3.1.
+  - Upgrade minimum R version to `(>= 3.5.0)`.
+- Update `Morpho.R` script:
+  - Add `\dontrun{}` for examples in `proc2MCMCtree` that require package
+    `Morpho` in case users do not have this package installed.
+- Update `mcmc2anc.R` script:
+  - Add `\dontrun{}` for examples section to avoid warnings when using `rgl`.
+  - Change lines 45-46 so that lines are not wider than 100 characters as
+    before they were truncated in the PDF manual.
+- Update vignette `Reproduce_Carnivora_analysis.Rmd`:
+  - Add `eval=FALSE` in all code snippets. Package `Morpho` is not imported and
+    running these examples raises errors.
+  - Define code snippets from section 4 onward using `{r}`.
+  - Add `mcm3r::` before calling a function within this package in the code
+    snippets.
+  - Replace some `=` with `<-` as it is encouraged in R.
+  - Fix some typos.
+- Update `carnivores.R` script:
+  - Fix typo in surname.
+
 ## [0.5.4] - 2024-02-09
 ### Added
 - Function `mcmc.sum` to calculate summary statistics on MCMCtree's output.

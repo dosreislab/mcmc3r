@@ -16,19 +16,19 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this tutorial, we will use morphometric and molecular data from extant and fossil carnivores for Bayesian inference of speciation timings. The tutorial reproduces the analysis in  
+In this tutorial, we will use geometric morphometrics (GMM) and molecular data from extant and fossil carnivores for Bayesian inference of speciation timings. The tutorial reproduces the analysis detailed in the following paper:  
 
-**Bayesian estimation of species divergence times using correlated quantitative characters**   
-Álvarez-Carretero S, Goswami A, Yang Z, and dos Reis M. (2019) _Systematic Biology_, 68: 967–986.  
-[DOI: 10.1093/sysbio/syz015](https://doi.org/10.1093/sysbio/syz015)
+> **Bayesian estimation of species divergence times using correlated quantitative characters**\
+> Álvarez-Carretero S, Goswami A, Yang Z, and dos Reis M. (2019) *Systematic Biology*, 68: 967--986.\
+> [DOI: 10.1093/sysbio/syz015](https://doi.org/10.1093/sysbio/syz015)
 
 The tutorial is divided into the following steps:  
 
-  1. Collect and process morphological data   
-  2. Perform Procrustes alignment of morphometric data  
-  3. Transform morphometric alignment to account for population noise and character correlation  
-  4. Carry out MCMC divergence dating with MCMCtree using morphometric and molecular data  
-  5. Visualise and validate divergence dating results  
+1. Collect and process morphological data   
+2. Perform Procrustes alignment of GMM data  
+3. Transform a GMM alignment to account for population noise and character correlation
+4. Carry out MCMC divergence dating with MCMCtree using GMM and molecular data  
+5. Visualise and validate divergence dating results  
   
 Before starting the tutorial, make sure you have the `mcmc3r` R package and its dependencies installed. Steps 4 and 5 require that you: (1) download and install the command line version of [MCMCTree from PAML](https://bit.ly/ziheng-paml) (make sure MCMCtree is in your system's PATH, as explained in PAML's website), and (2) download the [tree, alignment and control files](https://github.com/dosreislab/mcmc3r/tree/master/misc/carnivores) necessary to reproduce the analysis with MCMCtree, and save these files to a directory called `carnivores/`. This tutorial was tested with PAML version 4.9j, and thus we recommend you use this version when doing the tutorial excercises.
 
@@ -41,7 +41,8 @@ If there is one species for which more than one specimen is available, we can us
 * **The foxes (*Vulpes vulpes*) data set**: landmarks collected from 21 fox specimens.  
 * **The carnivoran data set**: landmarks collected from 19 species (one specimen per species, with one fox specimen also present in the foxes data set).  
 
-### Specimens information 
+### Specimens information
+
 The 19 carnivoran specimens are detailed in the next table. The oldest fossil species is _Hesperocyon sp._ dating to roughly 35.6 Millions years ago (Ma).
 
 
@@ -74,6 +75,7 @@ The 19 carnivoran specimens are detailed in the next table. The oldest fossil sp
 
 
 ### Landmark points
+
 The 29 3D-landmarks collected from the specimen skulls are:
 
 | Landmark # | Landmark description                                  |
@@ -116,10 +118,13 @@ The next figure shows a 2D projection of the landmarks. The crosses in orange ar
 </p>
 
 ### Raw data
+
 The landmarks can be collected in 2D (`x` and `y` coordinates per landmark) or 3D (`x`, `y`, and `z` coordinates per landmark). In this tutorial, we are using 29 3D landmarks.
 
 #### A. Carnivores data set
-  1. Load the raw data. The raw landmark data can be found in the `inst/extdata` directory.  The command below will find and load the data into R:
+
+1. Load the raw data. The raw landmark data can be found in the `inst/extdata` directory.  The command below will find and load the data into R:   
+
 ```{r}
 filepath <- system.file( "extdata", "carnivores19x29.tsv", package = "mcmc3r")
 carnivores19x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".", sep = "\t" )
@@ -134,9 +139,9 @@ knitr::kable(carnivores19x29.raw[,1:9])
 
   * The full table has 19 rows, one for each of the 19 specimens, and 89 columns, 2 columns with information about the specimens and 87 columns with the coordinates collected for the 29 3D-landmarks, i.e. $29\times3=87$ morphological traits.  
 
-  2. Note that this new object `carnivores19x29.raw` is not a matrix: it is a data.frame. We need an object of class matrix in order to perform a Procrustes analysis. Therefore, we only keep the columns with the morphological characters (columns 3-89). Furthermore, we use the first column, which contains the names of the specimens, as the names for the rows in the new matrix. This step is very important, as this is the only way we will be able to identify the landmarks with the corresponding specimen they were collected from.  
+2. Note that this new object `carnivores19x29.raw` is not a matrix: it is a data.frame. We need an object of class matrix in order to perform a Procrustes analysis. Therefore, we only keep the columns with the morphological characters (columns 3-89). Furthermore, we use the first column, which contains the names of the specimens, as the names for the rows in the new matrix. This step is very important, as this is the only way we will be able to identify the landmarks with the corresponding specimen they were collected from.  
 
-```{r}
+```{r, eval=FALSE}
 # 1. Convert raw data into class matrix and add row names
 C.mat              <- as.matrix( carnivores19x29.raw[ , 3:dim( carnivores19x29.raw )[2] ] )
 row.names( C.mat ) <- carnivores19x29.raw[ ,1 ]
@@ -144,24 +149,25 @@ row.names( C.mat ) <- carnivores19x29.raw[ ,1 ]
 
 
 #### B. Foxes data set
-  1. Load the raw data. As mentioned before, you can find the raw data in the `inst/extdata` directory.    
-```{r}
+
+1. Load the raw data. As mentioned before, you can find the raw data in the `inst/extdata` directory.    
+```{r, eval=FALSE}
 filepath <- system.file( "extdata", "vulpes21x29.tsv", package = "mcmc3r")
 vulpes21x29.raw <- read.table( file = filepath, header = F, skip = 1, dec = ".", sep = "\t" )
 dim( vulpes21x29.raw )
 ```  
 
-  * The first nine columns of `vulpes21x29.raw` are:  
+   * The first nine columns of `vulpes21x29.raw` are:  
 
-```{r, echo=FALSE, results='asis'}
+```{r, echo=FALSE, results='asis', eval=FALSE}
 knitr::kable(vulpes21x29.raw[,1:9])
 ```
 
-  * The full table has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the coordinates collected for the 29 3D-landmarks, i.e. $29\times3=87$.  
+   * The full table has 21 rows, one for each of the 21 foxes specimens, and 88 columns, 1 column with the names of the specimens and 87 columns with the coordinates collected for the 29 3D-landmarks, i.e. $29\times3=87$.  
 
-  2. As before, we need to convert the foxes data frame into a matrix, paying attention to preserving the species names and row names:  
+2. As before, we need to convert the foxes data frame into a matrix, paying attention to preserving the species names and row names:  
 
-```{r}
+```{r, eval=FALSE}
 V.mat <- as.matrix( vulpes21x29.raw[ , 2:dim( vulpes21x29.raw )[2] ] )
 row.names( V.mat ) <- vulpes21x29.raw[ , 1 ]
 ```
@@ -172,42 +178,42 @@ Now, we have two objects of class matrix with the two processed data sets: `C.ma
 
 We will use the R package `Morpho` to perform the Procrustes alignment. We choose this package because it allows alignment of the foxes landmarks to the mean Procrustes shape of the carnivores. This ensures that the morphological alignment with the foxes, which will be later used to correct for population variance, is oriented and aligned to the morpho space of the rest of the carnivores specimens. 
 
-  1. Use the `mcmc3r::matrix2array` function to convert the matrix objects previously generated into arrays. The array format is required to perform a Procrustes alignment with the package `Morpho`.  
+1. Use the `mcmc3r::matrix2array` function to convert the matrix objects previously generated into arrays. The array format is required to perform a Procrustes alignment with the package `Morpho`.  
 
-```{r}
+```{r, eval=FALSE}
 C.arr <- mcmc3r::matrix2array( X = C.mat, coords = 3 )
 V.arr <- mcmc3r::matrix2array( X = V.mat, coords = 3 )
 ```  
 
- 2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens, resulting in the morphological alignment saved in object `C.PS` ($19\times87$). Note we have symmetrical landmarks, that is, landmarks collected from the left and right sides of the skull, and thus we indicate these as "paired landmarks" during Procrustes alignment:   
+2. Use `Morpho::procSym` to perform a Procrustes alignment with `C.arr`. This function aligns all carnivoran specimens, resulting in the morphological alignment saved in object `C.PS` ($19\times87$). Note we have symmetrical landmarks, that is, landmarks collected from the left and right sides of the skull, and thus we indicate these as "paired landmarks" during Procrustes alignment:   
  
-```{r}
- #2.1. Get right and left vectors with corresponding symmetric landmarks
+```{r, eval=FALSE}
+# Get right and left vectors with corresponding symmetric landmarks
 right <- c( 11, 22, 13, 19, 15, 20, 24, 5, 7, 2, 9, 26, 29 )
 left  <- c( 10, 21, 12, 17, 14, 18, 23, 4, 6, 1, 8, 25, 28 )
 pairedLM <- cbind( left, right )
- #2.2. Run Morpho:procSym
+# Run Morpho::procSym
 C.PS  <- Morpho::procSym( dataarray = C.arr,
                         pairedLM = pairedLM )
 ```
 
- 3. We had previously put in an array the 21 foxes specimens and they are in object `V.arr`. So now we remove from `V.arr` the rows with the common fox in the objects `C.arr` and `V.arr`. This is done to avoid having repeated data, as `C.PS` contains an alignment with the same fox in both data sets. The common fox is the first specimen, therefore this is the specimen we remove from the array.   
+3. We had previously put in an array the 21 foxes specimens and they are in object `V.arr`. So now we remove from `V.arr` the rows with the common fox in the objects `C.arr` and `V.arr`. This is done to avoid having repeated data, as `C.PS` contains an alignment with the same fox in both data sets. The common fox is the first specimen, therefore this is the specimen we remove from the array.   
 
-```{r}
+```{r, eval=FALSE}
 V.arr.nov1 <- V.arr[,,-1]
 ```
 
- 4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($20\times87$).   
+4. Use the object of class `symproc` output by `Morpho::procSym`, `C.PS`, in the  `Morpho::align2procSym` function. Specifically, this function will use the mean shape of alignment `C.PS` as the morpho space to which the landmarks of the other 20 foxes will be aligned, resulting in alignment `V.PS.nov1` ($20\times87$).   
 
-```{r}
+```{r, eval=FALSE}
 V.PS.nov1             <- Morpho::align2procSym( x = C.PS, newdata = V.arr.nov1 )
 # Add the species names as row names in V.PS.nov1
 dimnames( V.PS.nov1 ) <- dimnames( V.arr.nov1 )
 ```
 
- 5. Get the vulpes (Vulpes_1) from `C.PS`, in position 13, and add it to `V.PS`. This includes the vulpes in the previous alignment.      
+5. Get the vulpes (Vulpes_1) from `C.PS`, in position 13, and add it to `V.PS`. This includes the vulpes in the previous alignment.      
 
-```{r}
+```{r, eval=FALSE}
 V.PS              <- array( dim = c( 29, 3, 21 ) )
 dimnames( V.PS )  <- list( paste( "lmk", seq( 1:29 ), sep="" ),
                                   c( "x", "y", "z" ),
@@ -220,7 +226,7 @@ V.PS[,,2:21] <- V.PS.nov1
 
 We have finished the Procrustes analysis! Now we convert the aligned landmark arrays back into matrices, as we need to manipulate these matrices to correct for population noise and landmark correlations:
  
-```{r}
+```{r, eval=FALSE}
 C <- mcmc3r::array2matrix( X = C.PS$rotated, coords = 3 )
 V <- mcmc3r::array2matrix( X = V.PS, coords = 3 )
 ```
@@ -228,17 +234,18 @@ V <- mcmc3r::array2matrix( X = V.PS, coords = 3 )
 Matrix `C` is the morphological alignment with the 19 carnivoran specimens, while  matrix `V` contains the fox-only morphological alignment. We can now correct for the population noise and the correlation among characters. We will see how to do this in the next step!
 
 ## 3. Correct `C` for population noise and trait correlation
+
 We will use the fox-only matrix to estimating the population noise (or population variance) and the correlation matrix among landmarks, which is obtained using the shrinkage estimator from package `corpcor`.
 
 1. Find population variance using object `V`.
 
-```{r}
+```{r, eval=FALSE}
 var.foxes <- diag( cov( V ) )
 ```
 
 2. Use the function `corpcor::cor.shrink` to estimate the shrinkage correlation matrix, `R.sh`, using the object `V`. This function gurantees to find the optimum value of delta to estimate a correlation matrix that can be inverted: `R.sh`. 
 
-```{r}
+```{r, eval=FALSE}
 # Generate shrinkage correlation matrix, R.sh
 R.sh <- corpcor::cor.shrink( V )
 # Convert R.sh into class matrix
@@ -248,33 +255,28 @@ R.sh <- cbind( R.sh )
 These two objects will be later used in the `mcmc3r::write.morpho` function to correct for population noise and trait correlation.
 
 ## 4. Bayesian inference of divergence times with MCMCtree
-We will proceed with Bayesian MCMC sampling of divergence times, which requires using a program external to R, MCMCtree. First, we use function `mcmc3r::write.morpho` to write the Procrustes alignment into a phylip file suitable for analysis with MCMCtree. The function will take the estimates of the population noise and character correlations and apply these to the Procustes alignment to generate a new transformed alignment with independent columns and population variances normalised to one (see original paper for details). The parameters we are going to pass to this function are:  
 
-   * **M**   
-      This is the morphological alignment, object `C`, we have previously generated. Therefore, we would write `M = C` when setting this parameter in the function.    
-      
-   * **filename**   
-     This is the name that will be given to the output file with the morphological alignment. We have chosen `seqfile.aln`, but you can choose any name.     
-     
-   * **c**   
-     This is the argument that takes the population noise, The object passed can be of length 1, if all characters have the same variance, or a vector with the same length than the number of characters (each character has a specific variance). In this tutorial, we are using the latter, as we are passing the object `var.foxes` with the population variance for each character previously calculated.     
-     
-   * **R**   
-     The object passed to this parameter has to be a symmetric and positive definite matrix, thus allowing to calculate its inverse. Otherwise, the likelihood calculation cannot take place because it needs to use the inverse of the correlation matrix. We are using `R.sh`, the estimated shrinkage correlation matrix calculated in the previous step.     
-     
-   * **method**   
-    If a correlation matrix is passed to parameter `R`, this function can use either
-the `method = "chol"`(Cholesky decomposition) or `method = "eigen"` (eigen decomposition) to obtain a matrix `A` such that $R^{-1}={A^{T}}{A}$. This matrix $\mathrm{A^{T}}$ is later used to transform the morphological data, `M`, to account for the correlation in this data set, so that the transformed characters in `Z`, $\mathrm{Z}=\mathrm{M}\mathrm{A^{T}}$, are independent.     
+We will proceed with Bayesian MCMC sampling of divergence times, which requires using a program external to R, MCMCtree. First, we use function `mcmc3r::write.morpho` to write the Procrustes alignment into a phylip file suitable for analysis with MCMCtree. The function will take the estimates of the population noise and character correlations and apply these to the Procustes alignment to generate a new transformed alignment with independent columns and population variances normalised to one (see original paper for details). The parameters we are going to pass to this function are:
 
-   * **names**   
-     Vector or list with the specimens names. In this tutorial, we use a character vector.     
-     
-   * **ages**   
-     Vector or list with the ages of the specimens. Make sure each age corresponds to the right specimen as it should be in the same order than in vector `names`. In this tutorial, we use a numeric vector. Note extant species should have age `0` while extinct species should have ages `> 0`.   
+* **M**   
+   This is the morphological alignment, object `C`, we have previously generated. Therefore, we would write `M = C` when setting this parameter in the function.   
+* **filename**   
+   This is the name that will be given to the output file with the morphological alignment. We have chosen `seqfile.aln`, but you can choose any name.   
+* **c**   
+   This is the argument that takes the population noise, The object passed can be of length 1, if all characters have the same variance, or a vector with the same length than the number of characters (each character has a specific variance). In this tutorial, we are using the latter, as we are passing the object `var.foxes` with the population variance for each character previously calculated.   
+* **R**   
+   The object passed to this parameter has to be a symmetric and positive definite matrix, thus allowing to calculate its inverse. Otherwise, the likelihood calculation cannot take place because it needs to use the inverse of the correlation matrix. We are using `R.sh`, the estimated shrinkage correlation matrix calculated in the previous step.   
+* **method**   
+   If a correlation matrix is passed to parameter `R`, this function can use either
+the `method = "chol"`(Cholesky decomposition) or `method = "eigen"` (eigen decomposition) to obtain a matrix `A` such that $R^{-1}={A^{T}}{A}$. This matrix $\mathrm{A^{T}}$ is later used to transform the morphological data, `M`, to account for the correlation in this data set, so that the transformed characters in `Z`, $\mathrm{Z}=\mathrm{M}\mathrm{A^{T}}$, are independent.   
+* **names**   
+   Vector or list with the specimens names. In this tutorial, we use a character vector.   
+* **ages**   
+   Vector or list with the ages of the specimens. Make sure each age corresponds to the right specimen as it should be in the same order than in vector `names`. In this tutorial, we use a numeric vector. Note extant species should have age `0` while extinct species should have ages `> 0`.   
      
 Before running the commands below, use the `setwd` command in R to set your working directory to the `carnivores/` directory you created earlier.
 
-```R
+```{r, eval=FALSE}
 # setwd("~/carnivores/") # use the right directory path
 # Create a vector (although it can also be a list) with the specimens names
 names <- c( "Ael_sp.", "Can_dir", "Epi_hay", "Hes_sp.",
@@ -296,19 +298,19 @@ ages  <- list( sp1  = 13.135, sp2  =  0.0285, sp3  = 11.95,  sp4  = 35.55,
 mcmc3r::write.morpho( M = C, filename = "seqfile.aln", c = var.foxes , R = R.sh, method = "chol", names = names, ages = ages )
 ```
 
-You can find more information and other examples in `?mcmc3r::write.morpho`. A bit of file `seqfile.aln`, which follows the phylip format, is shown below:
+You can find more information and other examples in `?mcmc3r::write.morpho`. A bit of file `seqfile.aln`, which follows the PHYLIP format, is shown below:
 
 ```
   19  87  M  1  -17.4449361406561
 
-Ael_sp.^22.425      32.1888806478969 13.2166043633248 18.0769785490827 18.281711911716 ...
-Can_dir^35.5315     28.6903520919794 11.7957141425012 10.6673624273699 18.534525714336 ...
-Epi_hay^23.61       30.7230881245987 13.8673453218744 3.30535244654374 19.485537316457 ...
-Hes_sp.^0.01        29.6257424752038 4.39441803218726 12.7003750739771 25.357085271393 ...
-Par_jos^9.945       26.8972062403083 16.3244194778594 9.66291130048758 17.821466488795 ...
-Tom_sp.^20.775      27.5960709958697 13.2198776170147 6.19263005366892 18.297241476196 ...
-Enh_pah^7.01        29.1449154123494 8.81885279314611 13.2404534560068 20.525956467793 ...
-Cuo_alp^35.56       25.9516979794982 12.9776718002656 11.2662021565935 15.972699956599 ...
+Ael_sp.^22.425      32.1888806478969 13.2166043633248 18.0769785490827  ...
+Can_dir^35.5315     28.6903520919794 11.7957141425012 10.6673624273699  ...
+Epi_hay^23.61       30.7230881245987 13.8673453218744 3.30535244654374  ...
+Hes_sp.^0.01        29.6257424752038 4.39441803218726 12.7003750739771  ...
+Par_jos^9.945       26.8972062403083 16.3244194778594 9.66291130048758  ...
+Tom_sp.^20.775      27.5960709958697 13.2198776170147 6.19263005366892  ...
+Enh_pah^7.01        29.1449154123494 8.81885279314611 13.2404534560068  ...
+Cuo_alp^35.56       25.9516979794982 12.9776718002656 11.2662021565935  ...
 ...
 ```
 
@@ -350,15 +352,16 @@ File `mcmctree.ctl` contains the instructions required by MCMCtree to carry out 
        nsample = 8000
 ```
 
-The first line, `seed = -1` tells the program to use a random seed to initialise the stochastic sampler. Then we have the names of the data files required by the program: the alignment, `morph_mol.aln`, and the phylogeny, `carnivores.tree`. Then the names of the output files: the raw mcmc output `mcmc.txt`, and the processed output `out.txt`. The next line, `ndata = 2` tells the program our alignment has two partitions. Then `seqtype = 0` which indicates DNA alignments for the non-morpho partitions, and `usedata = 1` which tells the program to use exact likelihood calculation (you can see a full description of all options in the MCMCtree manual). Then `clock = 2` tells the program to use the independent-log normal relaxed-clock model. Line `Root age` is a fossil calibration on the root (always required with MCMCtree). The next line, `TipDate = 1 1` activates tip dating (i.e. our fossil taxa are dated tips), with a time unit of 1 My. Then `model = 0` tells MCMCtree to use the JC69 model for the moleculr partition. We choose this model here because it is very fast to compute. In the original paper, we used HKY. We then have the prior for alpha, for the discrete gamma model, `alpha_gamma = 1 1`. Then we have the priors for the relaxed clock model, `rgene_gamma = 2 10`, and `sigma2_gamma = 2 2`. The last set of parameters control the amount of burin, `burnin = 500`, how often to collect samples from the MCMC, `sampfreq = 1`, and the total number of samples to collect, `nsample = 8000`.
+The first line, `seed = -1` tells the program to use a random seed to initialise the stochastic sampler. Then we have the names of the data files required by the program: the alignment, `morph_mol.aln`, and the phylogeny, `carnivores.tree`. Then the names of the output files: the raw mcmc output `mcmc.txt`, and the processed output `out.txt`. The next line, `ndata = 2` tells the program our alignment has two partitions. Then `seqtype = 0` which indicates DNA alignments for the non-morpho partitions, and `usedata = 1` which tells the program to use exact likelihood calculation (you can see a full description of all options in the MCMCtree manual). Then `clock = 2` tells the program to use the independent-log normal relaxed-clock model. Line `Root age` is a fossil calibration on the root (always required with MCMCtree). The next line, `TipDate = 1 1` activates tip dating (i.e. our fossil taxa are dated tips), with a time unit of 1 My. Then `model = 0` tells MCMCtree to use the JC69 model for the moleculr partition. We choose this model here because it is very fast to compute. In the original paper, we used HKY. We then have the prior for alpha, for the discrete gamma model, `alpha_gamma = 1 1`. Then we have the priors for the relaxed clock model, `rgene_gamma = 2 10`, and `sigma2_gamma = 2 2`. The last set of parameters control the amount of burn-in, `burnin = 500`, how often to collect samples from the MCMC, `sampfreq = 1`, and the total number of samples to collect, `nsample = 8000`.
 
-Using the command line, go into your `carnivores/` directory and type
+Using the command line, go to your `carnivores/` directory and type the following
+command:
 
 ```
 mcmctree mcmctree.ctl
 ```
 
-and press enter. This will now start MCMC sampling of divergences times using the morphological and molecular data. If the command above fails, either you don't have MCMCtree installed, or your MCMCtree executable is not in your [system's search path](http://abacus.gene.ucl.ac.uk/software/paml.html). It should take around 8 minutes for the analysis to complete depending on the computer.
+Then, please press enter to execute MCMCtree. The program will then start MCMC sampling of divergences times using the morphological and molecular data. If the command above fails, either you do not have MCMCtree installed, you have a different alias to execute the program, or your MCMCtree executable is not in your [system's search path](http://abacus.gene.ucl.ac.uk/software/paml.html). It should take around 8 minutes for the analysis to complete depending on the computer.
 
 ## 5. Visualise and validate divergence dating results
 
@@ -379,45 +382,52 @@ rategram locus 2:
 (((((((((Can_lup^35.56: 0.009285, Can_dir^35.5315: 0.009505): 0.016383, Cuo_alp^35.56: ...
 ```
 
-The first tree has nodes labelled with numbers. Tips are labelled from 1 to 19 (as we have 19 species), and internal nodes are labelled from 20 (the root) to 37. Next we have the timetree without the 95% CI, and next the same timetree but with the 95% CI of node ages, suitable for plotting with FigTree. The next two trees (rategrams) have branch lengths equal to the evolutionary rate for the branch, the first with the morphological rates for the landmark partition, and the second with the molecular rates for the molecular alignment.
+The first tree has nodes labelled with numbers. Tips are labelled from 1 to 19 (as we have 19 species), and internal nodes are labelled from 20 (the root) to 37. Next, we have the timetree without the 95% CI, and next the same timetree but with the 95% CI of node ages, suitable for plotting with FigTree. The next two trees (rategrams) have branch lengths equal to the evolutionary rate for the branch, the first with the morphological rates for the landmark partition, and the second with the molecular rates for the molecular alignment.
 
-If you scroll towards the bottom of the file, you will see a summary of the node ages (e.g., `t_n20`), rate parameters (`mu1`, `mu2`, `sigma1`, `sigma2`) and the branch rates (e.g., `r_g1_n1`). For example, the posterior mean age of the root and its 95% credibilities intervals (equal-tail and HPD) are:
+If you scroll towards the bottom of the file, you will see a summary of the node ages (e.g., `t_n20`), rate parameters (`mu1`, `mu2`, `sigma1`, `sigma2`), and branch rates (e.g., `r_g1_n1`). For example, the posterior mean age of the root and its 95% credibility intervals (equal-tail and HPD) are:
 
 ```
 t_n20         49.5139 (41.5294, 61.8787) (40.7484, 60.0179)
 ```
 
-Note the values in your `out.txt` file may look different as MCMC uses random sampling to estimates parameters in the posterior distribution.
+Note the values in your `out.txt` file may look different as MCMC uses random sampling to estimate parameters in the posterior distribution.
 
-File `mcmc.txt`, which contains the raw MCMC output, can be loaded into R (Remember you must have your working directory  set to `carnivores/`):
+File `mcmc.txt`, which contains the raw MCMC output, can be loaded into R (remember you must have your working directory set to `carnivores/`):
 
-```R
-# setwd("~/carnivores/") # make sure you are in the right directory!
-# load the MCMC file
-mcmc = read.table("mcmc.txt", head=TRUE)
-# create a density plot for the root's age:
-plot(density(mcmc$t_n20, adj=.2), xlim=c(30, 80), main = "Root age", xlab="Time (Ma)", las=1)
-# and we can compare the posterior to the prior calibration, 'B(37.3, 66.0, 0.025, 0.025)':
-curve(mcmc3r::dB(x, 37.3, 66, .025, .025), add=TRUE, lty=2)
+```{r, eval=FALSE}
+# Modify the path below to the right directory in your file system
+# setwd("~/carnivores/")
+# Load the MCMC file
+mcmc <- read.table( file = "mcmc.txt", header = TRUE )
+# Create a density plot for the root's age...
+plot( density( mcmc$t_n20, adj = .2 ), xlim = c(30, 80),
+      main = "Root age", xlab = "Time (Ma)", las = 1 )
+# ... and we can compare the posterior to the prior calibration,
+# 'B(37.3, 66.0, 0.025, 0.025)':
+curve( mcmc3r::dB( x = x, tL = 37.3, tU = 66, pL = .025, pU = .025),
+       add = TRUE, lty = 2 )
 ```
 
 File `mcmc.txt` is suitable for performing diagnostics for convergence of the MCMC. For example, if you have the `coda` package installed, you can check for the effective sample sizes (ESS) of the parameters estimated. In our case many ESS will be small as we ran a rather short MCMC:
 
-```R
-coda::effectiveSize(mcmc[,-1])
+```{r, eval=FALSE}
+coda::effectiveSize( x = mcmc[,-1] )
 ```
 
 Alternatively, you can load `mcmc.txt` into Tracer (from the Beast MCMC software family) and perform convergence diagnostics there. We can also use the information within `mcmc.txt` to make a densitree plot in R:
 
-```R
-# read tree used by MCMCtree for sampling:
-tt = ape::read.tree("carnivores.tree")
-# recode the tip ages for plotting:
-back.ages = as.numeric(unlist(strsplit(tt$tip.label, "\\^"))[seq(from=2, to=2*19, by=2)])
-back.ages = max(back.ages) - back.ages
-# plot the densitree (note this command is may be slow):
-mcmc3r::mcmc2densitree(tt, mcmc, "t_", 0.025, alpha=0.1, tip.ages=back.ages, cex=.8, pfrac=.2)
-title(xlab="Million years ago")
+```{r, eval=FALSE}
+# Read tree used by MCMCtree for sampling:
+tt <- ape::read.tree( file = "carnivores.tree" )
+# Recode the tip ages for plotting:
+tips_info <- strsplit(tt$tip.label, "\\^")
+back.ages <- as.numeric(unlist(tips_info)[seq(from=2, to=2*19, by=2)])
+back.ages <- max( back.ages ) - back.ages
+# Plot the densitree (note this command may be slow):
+mcmc3r::mcmc2densitree( tree = tt, mcmc = mcmc, time.name = "t_", 
+                        thin = 0.025, alpha = 0.1, tip.ages = back.ages,
+                        cex = .8, pfrac = .2 )
+title( xlab = "Million years ago" )
 ```
 
 <p align="center">
@@ -432,43 +442,55 @@ MCMCtree also generated a `FigTree.tre` file suitable for plotting the timetree 
 
 Finally, we can use the MCMC sample from MCMCtree to generate ancestral reconstructions of the landmarks for all nodes in the phylogeny.
 
-```r
-# First we need to make sure the taxa names in C match exactly those in the tree
-# (which are slightly different as they contain the taxa ages)
-i <- pmatch(rownames(C), tt$tip.label)
-rownames(C) <- tt$tip.label[i]
-recM <- mcmc2anc(tree=tt, M=C, mcmc=mcmc, time.name="t_", rate.name="r_g1_", 
-                 tip.ages=back.ages)
+```{r, eval=FALSE}
+# First, we need to make sure the taxa names in object `C` match exactly
+# those in the tree (which are slightly different as they contain the taxa ages)
+i <- pmatch( rownames( C ), tt$tip.label )
+rownames( C ) <- tt$tip.label[i]
+recM <- mcmc2anc( tree = tt, M = C, mcmc = mcmc, time.name = "t_",
+                  rate.name = "r_g1_", tip.ages = back.ages)
 
-x <- seq(1, 87, by=3); y <- seq(2, 87, by=3)
+x <- seq( from = 1, to = 87, by = 3 )
+y <- seq( from = 2, to = 87, by = 3 )
 # Plot landmarks for the 19 carnivores:
-plot(C[,x], C[,y], pch='+', cex=.5, xlab="X coords", ylab=" Y coords")
+plot( x = C[,x], y = C[,y], pch = '+', cex = .5,
+      xlab = "X coords", ylab = " Y coords" )
 
-# plot ancestral reconstruction at the root (node 20):
-points(recM["20",x], recM["20",y], pch=19, col="red")
+# Plot ancestral reconstruction at the root (node 20):
+points( x = recM["20",x], y = recM["20",y], pch = 19, col = "red" )
 
-# mean shape
-mS <- apply(C, 2, mean)
-points(mS[x], mS[y], pch=19, col="blue")
+# Calculate and plot mean shape
+mS <- apply( X = C, MARGIN = 2, FUN = mean )
+points( x = mS[x], y = mS[y], pch = 19, col = "blue" )
 ```
 
 <p align="center">
   <img width="550" src="ancrec.jpg">
 </p>
 
-The reconstruction is stored as a matrix object. We can convert it to an array for compatibility with morphometrics software. This also allows 3D plots using the rgl package.
+The reconstruction is stored as a matrix object. We can convert it to an array for compatibility with morphometrics software. You can also use array objects to generate 3D plots with the rgl package.
 
-```r
-recA <- matrix2array(recM, 3)
-options(rgl.printRglwidget = TRUE)
-rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
+```{r, eval=FALSE}
+recA <- mcmc3r::matrix2array( X = recM, coords = 3 )
+options( rgl.printRglwidget = TRUE )
+rgl::plot3d( recA[,,"20"], ty = 's', size = 2, col = "red", aspect = FALSE )
 ```
 
-We hope you enjoyed the tutorial!
-
-**Exercise 1:** Because the MCMCtree is stochastic, there is no guarantee that the MCMC sample has converged to the posterior distribution. Rename files `mcmc.txt` and `out.txt` as `mcmc1.txt` and `out2.txt` respectively. Then run `mcmctree` again. Rename the newly generated files as `mcmc2.txt` and `out2.txt`. Now compare the two sets of files. For example, you can look at the posterior means and 95% CIs at the end of the `out1.txt` and `out2.txt` files, or you can plot the densities of the node age samples in R. Do the results look similar? If not, then the MCMC samples have not converged.
-
-**Exercise 2:** The MCMC above was rather short, and it is unlikely that the values converged. Open file `mcmctree.ctl` and change the following lines as shown here: `burnin = 5000`, `sampfreq = 50`, `nsample = 20000`. Then run MCMCtree again. This new analysis will take much longer, over 15 hours, which is normal in phylogenetic MCMC sampling. If you create two directories in your computer, you can run two analyses in parallel overnight. The next day look at the results in the `out.txt` files. The results should now be much more similar, indicating convergence.
-
 We hope this tutorial has been useful and you have managed to reproduce the results from the paper!
+
+<hr>
+
+### EXERCISES
+
+Now, some additional exercises you can play with:
+
+**Exercise 1:**\
+Because the MCMCtree is stochastic, there is no guarantee that the MCMC sample has converged to the posterior distribution. Rename files `mcmc.txt` and `out.txt` as `mcmc1.txt` and `out2.txt` respectively. Then run `mcmctree` again. Rename the newly generated files as `mcmc2.txt` and `out2.txt`. Now compare the two sets of files. For example, you can look at the posterior means and 95% CIs at the end of the `out1.txt` and `out2.txt` files, or you can plot the densities of the node age samples in R. Do the results look similar? If not, then the MCMC samples have not converged.
+
+<br>
+
+**Exercise 2:**\
+The MCMC above was rather short, and it is unlikely that the values converged. Open file `mcmctree.ctl` and change the following lines as shown here: `burnin = 5000`, `sampfreq = 50`, `nsample = 20000`. Then run MCMCtree again. This new analysis will take much longer, over 15 hours, which is normal in phylogenetic MCMC sampling. If you create two directories in your computer, you can run two analyses in parallel overnight. The next day look at the results in the `out.txt` files. The results should now be much more similar, indicating convergence.
+
+<br><br>
 
