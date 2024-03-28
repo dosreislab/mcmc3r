@@ -7,11 +7,7 @@
 dBD(x, lambda, mu, rho, t1 = 1)
 }
 \arguments{
-\item{x}{numeric, x values for which the density will be plotted. This 
-`dbd` function is passed to R function `curve` via variable `expr`. 
-The values you type as arguments for variables `from` and `to` in
-function `curve` will be used by variable `x` in this function 
-(see examples for details).}
+\item{x}{numeric, vector of quantiles.}
 
 \item{lambda}{numeric, birth rate.}
 
