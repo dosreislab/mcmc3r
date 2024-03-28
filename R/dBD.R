@@ -1,10 +1,6 @@
 #' Birth-death process with species sampling
 #' 
-#' @param x numeric, x values for which the density will be plotted. This 
-#' `dbd` function is passed to R function `curve` via variable `expr`. 
-#' The values you type as arguments for variables `from` and `to` in
-#' function `curve` will be used by variable `x` in this function 
-#' (see examples for details).
+#' @param x numeric, vector of quantiles.
 #' @param lambda numeric, birth rate.
 #' @param mu numeric, death rate.
 #' @param rho numeric, proportion of species sampled.
