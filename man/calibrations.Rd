@@ -64,7 +64,7 @@ curve(dU(x, 6), from=0, to=10, n=5e2)
 # Probability and quantile function for minimum bound (or truncated-Cauchy):
 qv <- 0:20
 # calculate probability vector from quantiles:
-pv <- pL(qv, tL=1))
+pv <- pL(qv, tL=1)
 # calculate quantiles back from probability vector:
 # (note numerical error)
 qL(pv, tL=1)

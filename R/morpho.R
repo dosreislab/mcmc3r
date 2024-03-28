@@ -834,8 +834,14 @@ array2matrix <- function( X, coords = c( 2, 3 ) ){
     stop( "\nPlease provide an object of class \"array\" with \"k x q x s\" dimensions,
           'k' landmarks, 'q' coordinates, and 's' specimens\n" )
   }
-  if ( class( X ) != "array" ){
-    stop( "\nPlease use an object of class \"array\"\n" )
+  ## 240327-SAC: Code changed so that "class()" does not raise a warning
+  # if ( class( X ) != "array" ){
+  #   stop( "\nPlease use an object of class \"array\"\n" )
+  # }
+  if ( class( X )[1] != "array" ){
+    if( class( X )[2] != "array" ){
+      stop( "\nPlease use an object of class \"array\"\n" )
+    }
   }
 
   # Check argument coords is alright compared to array X
@@ -1530,7 +1536,7 @@ sim.pop <- function( psample, n, c, R ){
 #' @author Sandra Alvarez-Carretero and Mario dos Reis
 #'
 #' @examples
-#'
+#' \dontrun{
 #' # A. Use the unaligned, but processed, carnivoran data (data = C.mat.unal) and
 #' #    vulpes data (popdata = V.mat.unal) to obtain a morphological alignment.
 #' #    The fox specimen that is common in V.mat.unal and C.mat.unal is the
@@ -1565,10 +1571,19 @@ sim.pop <- function( psample, n, c, R ){
 #'      obj.aln <- proc2MCMCtree( data = C.mat.unal, popdata = V.mat.unal, sp.data = 13,
 #'                                sp.popdata = 1, filename = "./seqfile.aln", coords = 3,
 #'                                method = c("chol"), pairedLM = pairedLM, ages = ages )
-#'
+#' }
+#' 
 #' @export
 proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords, method = c( "eigen", "chol" ), ages, ... ){
 
+  ## 240327-SAC: Add check for `Morpho` package
+  # If Morpho package not available, stop and ask the user
+  # to install it -- Morpho has been removed from `Imports`
+  is_Morpho_installed <- c( "Morpho" %in% rownames(installed.packages()) )
+  if( is_Morpho_installed != TRUE ){
+    stop( "\nPlease install R pacakge \"Morpho\" to run function \"proc2MCMCtree\":\n install.packages(\"Morpho\")" )
+  }
+  
   # Check data and popdata are either array or matrix class
   .checkData( data = data, popdata = popdata, sp.data = sp.data, sp.popdata = sp.popdata )
 
@@ -1671,9 +1686,14 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
   if ( missing( data ) | missing( popdata ) ){
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for arguments \"data\" and \"popdata\"\n" )
   }
-
-  if ( !inherits( data, "matrix" ) & class( data ) != "array" ){
-    stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"data\"\n" )
+  ## 240327-SAC: Code changed so that "class()" does not raise a warning
+  # if ( !inherits( data, "matrix" ) & class( data ) != "array" ){
+  #   stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"data\"\n" )
+  # }
+  if ( !inherits( data, "matrix" ) & class( data )[1] != "array" ){
+    if ( !inherits( data, "matrix" ) & class( data )[2] != "array" ){
+      stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"data\"\n" )
+    }
   }
   if ( !inherits( popdata, "matrix" ) & class( popdata ) != "array" ){
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"popdata\"\n" )

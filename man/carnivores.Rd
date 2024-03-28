@@ -29,7 +29,7 @@ and correlation matrix, with Cholesky metric) for the 19 carnivores;
 molecular rates from an MCMCtree analysis.
 }
 \source{
-Álvares-Carretero S, Goswami A, Yang Z and dos Reis M. (2018) Bayesian
+Alvarez-Carretero S, Goswami A, Yang Z and dos Reis M. (2018) Bayesian
 estimation of species divergence times using correlated quantitative
 characters. \emph{Syst. Biol.,} 68: 967--986.
 }

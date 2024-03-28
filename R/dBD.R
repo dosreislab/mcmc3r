@@ -1,12 +1,13 @@
 #' Birth-death process with species sampling
 #' 
-#' @param lambda numeric, birth rate
-#' @param mu numeric, death rate
-#' @param rho numeric, proportion of species sampled
-#' @param t1 numeric, age of the phylogeny's root
+#' @param x numeric, vector of quantiles.
+#' @param lambda numeric, birth rate.
+#' @param mu numeric, death rate.
+#' @param rho numeric, proportion of species sampled.
+#' @param t1 numeric, age of the phylogeny's root.
 #' 
 #' @description
-#' Kernel density function for the birth-death proces with species sampling.
+#' Kernel density function for the birth-death process with species sampling.
 #' 
 #' @details 
 #' MCMCtree uses the BD kernel to generate the prior on node ages for those

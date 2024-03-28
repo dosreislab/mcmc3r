@@ -43,6 +43,8 @@ the tree and the labels. Use large values if your tip labels are long.}
 \item{plot.labels}{logical, whether to plot the tip labels. Ignored if
 \code{add = TRUE}.}
 
+\item{cex.lab}{numeric, the relative character size for the tip labels.}
+
 \item{axis}{logical, whether to plot the x axis.}
 
 \item{add}{logical, if TRUE add the trees to an existing plot, otherwise
@@ -51,8 +53,6 @@ create a new plot.}
 \item{tip.ages}{numeric, the ages of the tips, with the most recent tip
 having age zero, and the oldest tip having the largest age. If \code{NULL},
 tips are assumed to have all age zero.}
-
-\item{cex.labels}{numeric, the relative character size for the tip labels.}
 }
 \description{
 Plot a densi-tree from an MCMC sample from a BPP or MCMCTree analysis
