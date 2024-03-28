@@ -10,7 +10,7 @@ License: MIT + file LICENSE
 LazyData: TRUE
 Encoding: UTF-8
 Depends: R (>= 3.5.0)
-Suggests: knitr, rmarkdown, testthat (>= 0.11.0)
+Suggests: Morpho, Rdpack, knitr, rmarkdown, testthat (>= 0.11.0)
 VignetteBuilder: knitr
 Imports:
 	ape, corpcor, coda
