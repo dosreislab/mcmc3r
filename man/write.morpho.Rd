@@ -12,7 +12,8 @@ write.morpho(
   method,
   A = NULL,
   names,
-  ages
+  ages,
+  scale = 1
 )
 }
 \arguments{
@@ -39,6 +40,10 @@ morphological alignment (see examples B and C).}
 
 \item{ages}{(Optional) list or numeric, ages of the species included in the
 morphological alignment (see example C).}
+
+\item{scale}{numeric, all characters are multiplied by \code{scale} before
+the morphological matrix is printed to file. Useful to re-scale the characters
+so they have the required variance (rate).}
 }
 \description{
 Generate an alignment file with quantitative characters in MCMCtree format.

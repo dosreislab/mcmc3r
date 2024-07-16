@@ -4,6 +4,10 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.6] - 2024-07-13
+
+- Changed function `write.morpho` to include a scaling constant, so that all the traits are rescaling before writing to file. Useful to recale the mean rate of the morphological partition.
+
 ## [0.5.5] - 2024-03-27
 
 ### Removed
@@ -24,8 +28,7 @@ and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - Update `dBD.R` script:
   - Define parameter `x` as `@param` -> warning solved.
 - Update `mcmc2densitree`:
-  - Change `cex.labels` to `cex.lab` (line 18, `@param` section) as the latter is
-    used in the function -> warning solved.
+  - Change `cex.labels` to `cex.lab` (line 18, `@param` section) as the latter is used in the function -> warning solved.
 
 ### Changed
 

@@ -28,6 +28,10 @@
 #'
 #' @param ages (Optional) list or numeric, ages of the species included in the
 #' morphological alignment (see example C).
+#' 
+#' @param scale numeric, all characters are multiplied by \code{scale} before
+#' the morphological matrix is printed to file. Useful to re-scale the characters
+#' so they have the required variance (rate).
 #'
 #' @details
 #'
@@ -179,7 +183,7 @@
 #' @export
 
 write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
-                          method, A = NULL, names, ages ) {
+                          method, A = NULL, names, ages, scale = 1 ) {
 
   # Check initial arguments
   .checkInArgs( X = M, filename = filename, c = c, R = R,
@@ -243,10 +247,13 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
     Z     <- M
     lnd   <- 0
   }
-
+  
+  # scale Z if required
+  Z <- Z * scale
+  
   # Generate output file for MCMCtree
   .outFile( X = Z , names = names, chars = chars,
-            scalevar = scalevar, lndetR = lnd, filename = filename )
+            scalevar = scalevar * scale^2, lndetR = lnd, filename = filename )
 
 }
 
