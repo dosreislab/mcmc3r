@@ -1,5 +1,5 @@
 # mcmc3r
-An R package with utility functions to work with MCMCtree
+An R package with utility functions to work with MCMCtree and BPP
 
 You can install the package by typing in an R prompt:
 ```
@@ -20,7 +20,7 @@ curve(dB(x, 5, 10, .01, .05), n=5e2, from=0, to=20)
 ```
 
 ## Marginal likelihood calculation
-The package can be used to prepare control files for marginal likelihood calculation with MCMCtree to, for example, select the relaxed-clock model. Marginal likelihood calculation can be carried out by the thermodynamic integration or stepping-stones methods. A tutorial is available [here](https://dosreislab.github.io/2017/10/24/marginal-likelihood-mcmc3r.html).
+The package can be used to prepare control files for marginal likelihood calculation with MCMCtree and BPP, to, for example, select the relaxed-clock model. Marginal likelihood calculation can be carried out by the thermodynamic integration or stepping-stones methods. A tutorial is available [here](https://dosreislab.github.io/2017/10/24/marginal-likelihood-mcmc3r.html).
 
 ## Working with quantitative morphological characters
 The package is also useful for working with quantitative morphological characters. It can:  
