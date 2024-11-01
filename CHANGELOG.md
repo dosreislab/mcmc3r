@@ -4,9 +4,16 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.7] - 2024-11-01
+
+- Add function `mcmc2multiphylo` to generate a list of trees from the MCMC 
+output of MCMCtree or BPP.
+
 ## [0.5.6] - 2024-07-13
 
-- Changed function `write.morpho` to include a scaling constant, so that all the traits are rescaling before writing to file. Useful to recale the mean rate of the morphological partition.
+- Changed function `write.morpho` to include a scaling constant, so that all the 
+traits are rescaling before writing to file. Useful to rescale the mean rate of the 
+morphological partition.
 
 ## [0.5.5] - 2024-03-27
 
