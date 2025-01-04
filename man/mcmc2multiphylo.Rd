@@ -25,11 +25,11 @@ Convert an MCMC sample from MCMCTree or BPP to a list of trees
 }
 \details{
 \code{tree} must be rooted and strictly bifurcating, and it must
-  match the tree used by BPP or MCMCTree to obtain the MCMC sample. The
-  function uses the node ages in \code{mcmc} to calculate branch lengths and
-  generate a list of trees (with the same topology as \code{tree}), one tree
-  per (thinned) MCMC sample. The tips of the phylogeny are assumed to have
-  age zero.
+  match (i.e, it must use the same Newick representation) as the tree used by
+  BPP or MCMCTree to obtain the MCMC sample. The function uses the node ages
+  in \code{mcmc} to calculate branch lengths and generate a list of trees
+  (with the same topology as \code{tree}), one tree per (thinned) MCMC
+  sample. The tips of the phylogeny are assumed to have age zero.
 }
 \examples{
 # hominid MCMC sample from BPP:

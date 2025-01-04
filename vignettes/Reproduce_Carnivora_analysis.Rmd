@@ -16,7 +16,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-In this tutorial, we will use geometric morphometrics (GMM) and molecular data from extant and fossil carnivores for Bayesian inference of speciation timings. The tutorial reproduces the analysis detailed in the following paper:  
+In this tutorial, we will use geometric morphometrics (GMM) and molecular data from extant and fossil carnivores for Bayesian inference of speciation timings. The tutorial reproduces the analysis in:  
 
 > **Bayesian estimation of species divergence times using correlated quantitative characters**\
 > Álvarez-Carretero S, Goswami A, Yang Z, and dos Reis M. (2019) *Systematic Biology*, 68: 967--986.\
