@@ -58,14 +58,14 @@ NULL
 #' @export
 dL <- function(x, tL, p=0.1, c=1, pL=0.025) {
   a <- 1 - pL
-  A <- .5 + atan(p/c) / pi
+  A <- .5 + atan(p/c) / pi # this is 1 - F(x)
   theta <- a/pL * 1/(pi*A*c*(1 + (p/c)^2))
   
   dx <- numeric(length(x))
   
-  i <- which(x < 0)
-  j <- which(0 <= x & x < tL)
-  k <- which(x >= tL)
+  i <- (x < 0)
+  j <- (0 <= x & x < tL)
+  k <- (x >= tL)
   
   dx[i] <- 0
   dx[j] <- pL * theta/tL * (x[j]/tL)^(theta-1)
@@ -75,13 +75,33 @@ dL <- function(x, tL, p=0.1, c=1, pL=0.025) {
 }
 
 # probability function
+# @rdname calibrations
+# @export
+# old.pL <- Vectorize(
+#   function(q, tL, p=0.1, c=1, pL=0.025) {
+#     integrate(dL, lower=0, upper=q, tL=tL, p=p, c=c, pL=pL)$value
+#   }
+# )
+
 #' @rdname calibrations
 #' @export
-pL <- Vectorize(
-  function(q, tL, p=0.1, c=1, pL=0.025) {
-    integrate(dL, lower=0, upper=q, tL=tL, p=p, c=c, pL=pL)$value
-  }
-)
+pL <- function(q, tL, p=0.1, c=1, pL=0.025) {
+  a <- 1 - pL
+  A <- .5 + atan(p/c) / pi
+  theta <- a/pL * 1/(pi*A*c*(1 + (p/c)^2))
+  
+  px <- numeric(length(q))
+  
+  i <- (q < 0)
+  j <- (0 <= q & q <= tL)
+  k <- (q > tL)
+  
+  px[i] <- 0
+  px[j] <- pL * (q[j] / tL)^theta
+  px[k] <- pL + a * (pcauchy(q[k], location=tL*(1+p), scale=c*tL) - 1 + A) / A
+  
+  return(px)
+}
 
 # quantile function
 #' @rdname calibrations
@@ -102,12 +122,14 @@ qL <- Vectorize(
 dB <- function(x, tL, tU, pL=.025, pU=.025) {
   h <- (1-pL-pU) / (tU - tL)
   l2 <- h/pU
-  il <- (x < tL)
+  i0 <- (x <= 0)
+  il <- (0 < x & x < tL)
   iu <- (x > tU)
-  y <- rep(h, length(x))
+  y <- numeric(length(x))
+  y[!(i0 | il | iu)] <- h
   theta <- h * tL / pL
-  y[which(il)] <- pL * theta/tL * (x[il]/tL)^(theta-1)
-  y[which(iu)] <- pU * dexp(x[iu] - tU, l2)
+  y[il] <- pL * theta/tL * (x[il]/tL)^(theta-1)
+  y[iu] <- pU * dexp(x[iu] - tU, l2)
   return (y)
 }
 
