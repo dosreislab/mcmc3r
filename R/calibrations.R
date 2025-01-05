@@ -13,10 +13,12 @@
 #' @param pL numeric, minimum probability bound
 #' @param pU numeric, maximum probability bound
 #' 
-#' @details Calculates the density, distribution and quantile functions for the
-#'   minimum (dL) calibration, and the density function for the joint (dB) and
-#'   maximum (dU) calibration bounds as implemented in MCMCtree. See Yang and
-#'   Rannala (2007) and Inoue et al. (2010) for details.
+#' @details 
+#' Calculates the density, distribution and quantile functions for the minimum,
+#' \code{dL}, joint, \code{dB}, and maximum, \code{dU}, calibration bounds as
+#' implemented in MCMCtree (Yang and Rannala, 2006; Inoue et al. 2010). The
+#' minimum bound is implemented using a truncated Cauchy distribution (Inoue et
+#' al. 2010).
 #' 
 #' @return A vector of density, probability, or quantile values as appropriate.
 #' 
@@ -32,20 +34,34 @@
 #' @examples 
 #' # Plot a minimum bound calibration density:
 #' curve(dL(x, 1), from=0, to=10, n=5e2)
+#' # Cumulative distribution:
+#' curve(pL(x, 1), from=0, to=10, n=5e2)
 #' 
 #' # Plot a joint bounds calibration density:
 #' curve(dB(x, 1, 6), from=0, to=10, n=5e2)
+#' # Cummulative distribution:
+#' curve(pB(x, 1, 6), from=0, to=10, n=5e2)
 #' 
 #' # Plot a maximum bound calibration density:
 #' curve(dU(x, 6), from=0, to=10, n=5e2)
+#' # Cummulative distribution:
+#' curve(pU(x, 6), from=0, to=10, n=5e2)
 #' 
-#' # Probability and quantile function for minimum bound (or truncated-Cauchy):
-#' qv <- 0:20
-#' # calculate probability vector from quantiles:
-#' pv <- pL(qv, tL=1)
+#' # Check quantile function for minimum bound (or truncated-Cauchy):
+#' qv <- 0:20; pvL <- pL(qv, tL=1)
 #' # calculate quantiles back from probability vector:
 #' # (note numerical error)
-#' qL(pv, tL=1)
+#' plot(qv, qL(pvL, tL=1)); abline(0, 1)
+#' 
+#' # Check quantile function for joint bounds:
+#' pvB <- pB(qv, tL=2, tU=10, pL=.02, pU=.1)
+#' # calculate quantiles back:
+#' plot(qv, qB(pvB, tL=2, tU=10, pL=.02, pU=.1)); abline(0, 1)
+#' 
+#' # Check quantile function for upper bound:
+#' pvU <- pU(qv, tU=15, pU=.15)
+#' # calculate quantiles back:
+#' plot(qv, qU(pvU, tU=15, pU=.15)); abline(0, 1)
 #' 
 #' @author Mario dos Reis
 #'
@@ -74,15 +90,6 @@ dL <- function(x, tL, p=0.1, c=1, pL=0.025) {
   return(dx)
 }
 
-# probability function
-# @rdname calibrations
-# @export
-# old.pL <- Vectorize(
-#   function(q, tL, p=0.1, c=1, pL=0.025) {
-#     integrate(dL, lower=0, upper=q, tL=tL, p=p, c=c, pL=pL)$value
-#   }
-# )
-
 #' @rdname calibrations
 #' @export
 pL <- function(q, tL, p=0.1, c=1, pL=0.025) {
@@ -103,6 +110,15 @@ pL <- function(q, tL, p=0.1, c=1, pL=0.025) {
   return(px)
 }
 
+# probability function
+# @rdname calibrations
+# @export
+# old.pL <- Vectorize(
+#   function(q, tL, p=0.1, c=1, pL=0.025) {
+#     integrate(dL, lower=0, upper=q, tL=tL, p=p, c=c, pL=pL)$value
+#   }
+# )
+
 # quantile function
 #' @rdname calibrations
 #' @export
@@ -121,23 +137,68 @@ qL <- Vectorize(
 #' @export
 dB <- function(x, tL, tU, pL=.025, pU=.025) {
   h <- (1-pL-pU) / (tU - tL)
+  theta <- h * tL / pL
   l2 <- h/pU
+  
   i0 <- (x <= 0)
   il <- (0 < x & x < tL)
   iu <- (x > tU)
+  
   y <- numeric(length(x))
   y[!(i0 | il | iu)] <- h
-  theta <- h * tL / pL
   y[il] <- pL * theta/tL * (x[il]/tL)^(theta-1)
   y[iu] <- pU * dexp(x[iu] - tU, l2)
+  
   return (y)
 }
+
+#' @rdname calibrations
+#' @export
+pB <- function(q, tL, tU, pL=.025, pU=.025) {
+  h <- (1-pL-pU) / (tU - tL)
+  theta <- h * tL / pL
+  l2 <- h/pU
+  
+  i <- (q < 0)
+  j <- (0 <= q & q < tL)
+  k <- (tL <= q & q <= tU)
+  l <- (q > tU)
+  
+  px <- numeric(length(q))
+  px[i] <- 0
+  px[j] <- pL * (q[j] / tL)^theta
+  px[k] <- (q[k] - tL) * h + pL
+  px[l] <- 1 - pU + pU * pexp(q[l] - tU, rate=l2)
+  
+  return(px)
+}
+
+#' @rdname calibrations
+#' @export
+qB <- Vectorize(
+  function(prob, tL, tU, pL=0.025, pU=0.025) {
+    uniroot(function(x) (pB(x, tL=tL, tU=tU, pL=pL, pU=pU) - prob), 
+            int = c(0, tU * 2), extendInt="upX")$root
+  }
+)
 
 # Maximum bound: (see Yang and Rannala 2006)
 #' @rdname calibrations
 #' @export
 dU <- function(x, tU, pU=0.025) {
   dB(x=x, tL=0, tU=tU, pL=0, pU=pU)
+}
+
+#' @rdname calibrations
+#' @export
+pU <- function(q, tU, pU=0.025) {
+  pB(q=q, tL=0, tU=tU, pL=0, pU=pU)
+}
+
+#' @rdname calibrations
+#' @export
+qU <- function(prob, tU, pU=0.025) {
+  qB(prob=prob, tL=0, tU=tU, pL=0, pU=pU)
 }
 
 # # This file originates from the phylogenomic mammal paper (dos Reis et al. 2012, PRSB)

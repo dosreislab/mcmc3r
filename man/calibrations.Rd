@@ -6,7 +6,11 @@
 \alias{pL}
 \alias{qL}
 \alias{dB}
+\alias{pB}
+\alias{qB}
 \alias{dU}
+\alias{pU}
+\alias{qU}
 \title{Calibration densities}
 \usage{
 dL(x, tL, p = 0.1, c = 1, pL = 0.025)
@@ -17,7 +21,15 @@ qL(prob, tL, p = 0.1, c = 1, pL = 0.025)
 
 dB(x, tL, tU, pL = 0.025, pU = 0.025)
 
+pB(q, tL, tU, pL = 0.025, pU = 0.025)
+
+qB(prob, tL, tU, pL = 0.025, pU = 0.025)
+
 dU(x, tU, pU = 0.025)
+
+pU(q, tU, pU = 0.025)
+
+qU(prob, tU, pU = 0.025)
 }
 \arguments{
 \item{x}{numeric, vector of quantiles}
@@ -46,28 +58,43 @@ Density, distribution, and quantile functions for calibrations
 used in MCMCtree.
 }
 \details{
-Calculates the density, distribution and quantile functions for the
-  minimum (dL) calibration, and the density function for the joint (dB) and
-  maximum (dU) calibration bounds as implemented in MCMCtree. See Yang and
-  Rannala (2007) and Inoue et al. (2010) for details.
+Calculates the density, distribution and quantile functions for the minimum,
+\code{dL}, joint, \code{dB}, and maximum, \code{dU}, calibration bounds as
+implemented in MCMCtree (Yang and Rannala, 2006; Inoue et al. 2010). The
+minimum bound is implemented using a truncated Cauchy distribution (Inoue et
+al. 2010).
 }
 \examples{
 # Plot a minimum bound calibration density:
 curve(dL(x, 1), from=0, to=10, n=5e2)
+# Cumulative distribution:
+curve(pL(x, 1), from=0, to=10, n=5e2)
 
 # Plot a joint bounds calibration density:
 curve(dB(x, 1, 6), from=0, to=10, n=5e2)
+# Cummulative distribution:
+curve(pB(x, 1, 6), from=0, to=10, n=5e2)
 
 # Plot a maximum bound calibration density:
 curve(dU(x, 6), from=0, to=10, n=5e2)
+# Cummulative distribution:
+curve(pU(x, 6), from=0, to=10, n=5e2)
 
-# Probability and quantile function for minimum bound (or truncated-Cauchy):
-qv <- 0:20
-# calculate probability vector from quantiles:
-pv <- pL(qv, tL=1)
+# Check quantile function for minimum bound (or truncated-Cauchy):
+qv <- 0:20; pvL <- pL(qv, tL=1)
 # calculate quantiles back from probability vector:
 # (note numerical error)
-qL(pv, tL=1)
+plot(qv, qL(pvL, tL=1)); abline(0, 1)
+
+# Check quantile function for joint bounds:
+pvB <- pB(qv, tL=2, tU=10, pL=.02, pU=.1)
+# calculate quantiles back:
+plot(qv, qB(pvB, tL=2, tU=10, pL=.02, pU=.1)); abline(0, 1)
+
+# Check quantile function for upper bound:
+pvU <- pU(qv, tU=15, pU=.15)
+# calculate quantiles back:
+plot(qv, qU(pvU, tU=15, pU=.15)); abline(0, 1)
 
 }
 \references{

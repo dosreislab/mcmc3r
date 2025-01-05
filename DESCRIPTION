@@ -1,7 +1,7 @@
 Package: mcmc3r
 Type: Package
 Title: Tools to work with MCMCtree and BPP
-Version: 0.5.7
+Version: 0.5.8
 Date: 2024-11-01
 Authors@R: person("Mario", "dos Reis", email = "mariodosreis@gmail.com", role = c("aut", "cre"))
 	person("Sandra", "Alvarez-Carretero", email = "sandra.ac93@gmail.com", role = c("aut", "cre"))

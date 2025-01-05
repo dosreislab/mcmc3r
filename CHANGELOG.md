@@ -4,6 +4,11 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.8] - 2025-01-05
+
+- Update `calibrations.R` with functions to calibrate cummulative and quantile
+functions for joint and upper calibration bounds.
+
 ## [0.5.7] - 2024-11-01
 
 - Add function `mcmc2multiphylo` to generate a list of trees from the MCMC 
