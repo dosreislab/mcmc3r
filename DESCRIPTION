@@ -14,4 +14,4 @@ Suggests: Morpho, Rdpack, knitr, rmarkdown, testthat (>= 0.11.0)
 VignetteBuilder: knitr
 Imports:
 	ape, corpcor, coda
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
