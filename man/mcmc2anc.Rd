@@ -11,7 +11,8 @@ mcmc2anc(
   time.name,
   rate.name,
   tip.ages = NULL,
-  method = c("quick", "proper")
+  method = c("quick", "proper"),
+  thin
 )
 }
 \arguments{
@@ -26,20 +27,35 @@ mcmc2anc(
 \item{rate.name}{character vector of length one}
 
 \item{tip.ages}{numeric, the ages of the terminal taxa in the tree}
+
+\item{method}{character, the reconstruction method, see details}
+
+\item{thin}{numeric, the fraction of mcmc samples to keep, 
+ignored if \code{method == "quick"}}
 }
 \value{
-A n x k matrix with the ancestral reconstruction for the k characters at the
-n internal nodes of the phylogeny.
+If \code{method == "quick"}, the function returns a n x k matrix with the
+"mean" ancestral reconstruction for the k characters at the n internal nodes
+of the phylogeny. If \code{method == "proper"}, it returns a n x k x N array,
+where N is the number of observations in the thinned MCMC.
 }
 \description{
 Obtain the ancestral reconstruction of characters from an MCMC sample using
 Felsenstein (1973) model of continuous character evolution.
 }
 \details{
-The function first calculates the mean of divergence times and morphological
-rates in the MCMC sample. These are used to reconstruct the branch lengths in
-units of morphological evolution, and then Eq. (7) in Felsenstein (1973) is
-used to calculate the ancestral reconstruction on the tree. 
+If \code{method == "quick"}, the function first calculates the mean of
+divergence times and morphological rates in the MCMC sample. These are used
+to reconstruct the branch lengths in units of morphological evolution, and
+then Eq. (7) in Felsenstein (1973) is used to calculate the ancestral
+reconstruction. This results in a "mean" reconstruction along each internal
+node of the phylogeny. This method is meant to be quick for exploratory
+data analysis.
+
+If \code{method == "proper"}, the function applies Eq. (7) in Felsenstein
+(1973) to each observation from the thinned MCMC. The result is a posterior
+sample of reconstructions at each internal node. This method should be
+preferred.
 
 Note \code{time.name} is the name format used for the node ages in the MCMC
 dataframe, usually of the form \code{time.name = "t_"}. Similarly
@@ -69,9 +85,26 @@ points(recM["20",x], recM["20",y], pch=19, col="red")
 mS <- apply(carnivores$C.proc, 2, mean)
 points(mS[x], mS[y], pch=19, col="blue")
 
-# Convert reconstruction to an array, as is the standard in
-# morphometrics software
+# full (proper) reconstruction
+recF <- mcmc2anc(carnivores$tree, C, mcmc=carnivores$mcmc, time.name="t_", 
+       rate.name="r_g1_", tip.ages=back.ages, method="proper", thin=.0125)
+
+# calculate mean across full mcmc reconstruction
+mSF <- apply(recF, c(1,2), mean)
+
+# prepare area for plotting reconstruction:
+plot(mSF["20",x], mSF["20",y], ty='n')
+# add posterior sample for the root
+for (i in 1:dim(recF)[3]) 
+   points(recF["20",x,i], recF["20",y,i], cex=.7, pch='+', col="darkgray")
+# add proper mean reconstruction at the root
+points(mSF["20",x], mSF["20",y], pch=19, col="orange")
+# add quick mean reconstruction at the root (from previous step)
+points(recM["20",x], recM["20",y], pch='+', col="red")
+
 \dontrun{
+# Convert the quick reconstruction to an array, as is the standard in
+# morphometrics software
 recA <- matrix2array(recM, 3)
 options(rgl.printRglwidget = TRUE)
 rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)

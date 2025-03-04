@@ -10,13 +10,24 @@
 #' @param time.name character vector of length one
 #' @param rate.name character vector of length one
 #' @param tip.ages numeric, the ages of the terminal taxa in the tree
+#' @param method character, the reconstruction method, see details
+#' @param thin numeric, the fraction of mcmc samples to keep, 
+#' ignored if \code{method == "quick"}
 #' 
 #' @details
 #' 
-#' The function first calculates the mean of divergence times and morphological
-#' rates in the MCMC sample. These are used to reconstruct the branch lengths in
-#' units of morphological evolution, and then Eq. (7) in Felsenstein (1973) is
-#' used to calculate the ancestral reconstruction on the tree. 
+#' If \code{method == "quick"}, the function first calculates the mean of
+#' divergence times and morphological rates in the MCMC sample. These are used
+#' to reconstruct the branch lengths in units of morphological evolution, and
+#' then Eq. (7) in Felsenstein (1973) is used to calculate the ancestral
+#' reconstruction. This results in a "mean" reconstruction along each internal
+#' node of the phylogeny. This method is meant to be quick for exploratory
+#' data analysis.
+#'
+#' If \code{method == "proper"}, the function applies Eq. (7) in Felsenstein
+#' (1973) to each observation from the thinned MCMC. The result is a posterior
+#' sample of reconstructions at each internal node. This method should be
+#' preferred.
 #'
 #' Note \code{time.name} is the name format used for the node ages in the MCMC
 #' dataframe, usually of the form \code{time.name = "t_"}. Similarly
@@ -35,8 +46,10 @@
 #' continuous characters. \emph{Am J Hum Genet,} 25: 471--492.
 #' 
 #' @return 
-#' A n x k matrix with the ancestral reconstruction for the k characters at the
-#' n internal nodes of the phylogeny.
+#' If \code{method == "quick"}, the function returns a n x k matrix with the
+#' "mean" ancestral reconstruction for the k characters at the n internal nodes
+#' of the phylogeny. If \code{method == "proper"}, it returns a n x k x N array,
+#' where N is the number of observations in the thinned MCMC.
 #' 
 #' @examples
 #' data(carnivores) 
@@ -58,16 +71,33 @@
 #' mS <- apply(carnivores$C.proc, 2, mean)
 #' points(mS[x], mS[y], pch=19, col="blue")
 #' 
-#' # Convert reconstruction to an array, as is the standard in
-#' # morphometrics software
+#' # full (proper) reconstruction
+#' recF <- mcmc2anc(carnivores$tree, C, mcmc=carnivores$mcmc, time.name="t_", 
+#'        rate.name="r_g1_", tip.ages=back.ages, method="proper", thin=.0125)
+#' 
+#' # calculate mean across full mcmc reconstruction
+#' mSF <- apply(recF, c(1,2), mean)
+#' 
+#' # prepare area for plotting reconstruction:
+#' plot(mSF["20",x], mSF["20",y], ty='n')
+#' # add posterior sample for the root
+#' for (i in 1:dim(recF)[3]) 
+#'    points(recF["20",x,i], recF["20",y,i], cex=.7, pch='+', col="darkgray")
+#' # add proper mean reconstruction at the root
+#' points(mSF["20",x], mSF["20",y], pch=19, col="orange")
+#' # add quick mean reconstruction at the root (from previous step)
+#' points(recM["20",x], recM["20",y], pch='+', col="red")
+#' 
 #' \dontrun{
+#' # Convert the quick reconstruction to an array, as is the standard in
+#' # morphometrics software
 #' recA <- matrix2array(recM, 3)
 #' options(rgl.printRglwidget = TRUE)
 #' rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
 #' }
 #' @export
 mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL,
-                     method=c("quick", "proper")) {
+                     method=c("quick", "proper"), thin) {
   method <- match.arg(method)
   # tt must be rooted and strictly bifurcating
   # number of branches and species: nb = 2*s - 2 -> s = nb/2 + 1
@@ -101,17 +131,23 @@ mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL,
   if (method == "quick") {
     blen <- apply(blen, 2, mean)
     tree$edge.length <- blen[daughters]
-    return(recM = .ancrec(tree, M))
+    recM <- .ancrec(tree, M) 
+    return(recM)
   }
   
-  for (i in 1:N) {
-    tree$edge.length <- blen[i, daughters]
-  
-    # reconstruct using postorder traversal
-    recM <- .ancrec(tree, M)
+  if (method == "proper") {
+    ii <- floor(seq(from=1, to=N, length.out = N * thin))
+    iblen <- as.matrix(blen[ii,])
+    recM <- array(dim=c(ns - 1, ncol(M), length(ii)))
+    
+    for (i in 1:length(ii)) {
+      tree$edge.length <- iblen[i, daughters]
+      # reconstruct using postorder traversal
+      recM[,,i] <- .ancrec(tree, M)
+      rownames(recM) <- (tree$Nnode + 2):(2 * tree$Nnode + 1)
+    }
+    return(recM)
   }
-  
-  return(recM)
 }
 
 # Calculate transformation of trait values, x_i, and branch lengths, v_i,
@@ -149,7 +185,7 @@ mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL,
       l3 <- .tin (l1$xp, l2$xp, l1$vp, l2$vp, v3) # transform
       # debugging
       #print(ll - l1$ll - l2$ll)
-      recM[node - length(tree$tip.label),] <<- l3$xp 
+      recM.[node - length(tree$tip.label),] <<- l3$xp 
       return (list(xp=l3$xp, vp=l3$vp))
     }
     
@@ -157,13 +193,13 @@ mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL,
     stop ("Something went wrong, too many children!")
   }
   # matrix with ancestral reconstruction
-  recM <- matrix(nrow = tree$Nnode, ncol = ncol(trait_matrix))
-  rownames(recM) <- (tree$Nnode + 2):(2 * tree$Nnode + 1)
+  recM. <- matrix(nrow = tree$Nnode, ncol = ncol(trait_matrix))
+  rownames(recM.) <- (tree$Nnode + 2):(2 * tree$Nnode + 1)
   
   # call recursive function for reconstruction
   .contml(length(tree$tip.label) + 1, tree, trait_matrix)
   
-  return(recM)
+  return(recM.)
 }
 
 # Landmark array configuration:
