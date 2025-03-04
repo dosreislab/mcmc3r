@@ -66,7 +66,9 @@
 #' rgl::plot3d(recA[,,"20"], ty='s', size=2, col="red", aspect=FALSE)
 #' }
 #' @export
-mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL) {
+mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL,
+                     method=c("quick", "proper")) {
+  method <- match.arg(method)
   # tt must be rooted and strictly bifurcating
   # number of branches and species: nb = 2*s - 2 -> s = nb/2 + 1
   ns <- tree$Nnode + 1
@@ -77,7 +79,10 @@ mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL) {
   M <- M[pi,]; M <- as.matrix(M)
   
   # set tip ages
-  if (is.null(tip.ages)) tip.ages <- rep(0, ns)
+  if (is.null(tip.ages)) {
+    tip.ages <- rep(0, ns)
+    warning("Assuming all species are extant. Set tip.ages to avoid this message.")
+  }
   
   # find node ages and morphological rates
   ti <- grep(time.name, names(mcmc))
@@ -90,13 +95,21 @@ mcmc2anc <- function(tree, M, mcmc, time.name, rate.name, tip.ages=NULL) {
   daughters <- tree$edge[,2]
   
   blen <- (ages[,parents] - ages[,daughters]) * mcmc[,ri]
-  blen <- apply(blen, 2, mean)
   
   daughters[daughters > ns] <- daughters[daughters > ns] - 1
-  tree$edge.length <- blen[daughters]
   
-  # reconstruct using postorder traversal
-  recM <- .ancrec(tree, M)
+  if (method == "quick") {
+    blen <- apply(blen, 2, mean)
+    tree$edge.length <- blen[daughters]
+    return(recM = .ancrec(tree, M))
+  }
+  
+  for (i in 1:N) {
+    tree$edge.length <- blen[i, daughters]
+  
+    # reconstruct using postorder traversal
+    recM <- .ancrec(tree, M)
+  }
   
   return(recM)
 }

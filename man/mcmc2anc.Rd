@@ -4,7 +4,15 @@
 \alias{mcmc2anc}
 \title{Ancestral character reconstruction from an MCMC sample}
 \usage{
-mcmc2anc(tree, M, mcmc, time.name, rate.name, tip.ages = NULL)
+mcmc2anc(
+  tree,
+  M,
+  mcmc,
+  time.name,
+  rate.name,
+  tip.ages = NULL,
+  method = c("quick", "proper")
+)
 }
 \arguments{
 \item{tree}{a rooted, strictly bifurcating phylogeny}
