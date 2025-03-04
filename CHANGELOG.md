@@ -4,6 +4,12 @@ Important changes to this project will be documented in this file.
 We try to follow [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and we use [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [0.5.9] - 2025-03-04
+
+- Update `mcmc2anc.R` with a better "proper" reconstruction method, that 
+returns an array of reconstructions at the internal nodes of the phylogeny.
+The previous method is now called "quick", and it is still available.
+
 ## [0.5.8] - 2025-01-05
 
 - Update `calibrations.R` with functions to calibrate cummulative and quantile
