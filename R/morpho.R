@@ -62,7 +62,11 @@
 #' }
 #'
 #' Note that if a list with the specimens names is not passed to the parameter \code{names},
-#' the name for each species will be "Species_1", "Species_2", and so on.
+#' the name for each species will be obtained from the row names in object \code{M}.
+#' Please note that this feature has changed as of April 2025; tags as
+#' "Species_1", "Species_2", and so on would have been given instead. 
+#' Nevertheless, if you are using function \code{sim.pop} to simulate data,
+#' tags that follow notation "Species_X" will be used for specimens names.
 #'
 #' The object \code{c} can be of length 1, if all characters have the same variance, or
 #' a vector of length \code{n} with the variance of each of the characters. For the latter,
@@ -205,7 +209,10 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 
   # If names are not provided...
   else{
-    vars   <- .notNames( ages, s )
+    ## 250416-SAC: After updating function `.notNames`, now we can use
+    ## the row names from object `M` as specimen names
+    #vars   <- .notNames( ages, s )
+    vars   <- .notNames( ages, s, M )
     spaces <- vars$spaces
     names  <- vars$names
   }
@@ -280,7 +287,9 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
   }
 
   # Check population noise
-  if( class( c ) != "numeric" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if( class( c ) != "numeric" ){
+  if( is( c, "numeric" ) == FALSE ){
     stop( "\nThe parameter \"c\" needs a numeric value > 0 or a numeric vector
           of length \"n\" with values > 0\n" )
   }
@@ -299,7 +308,7 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
   }
 
   # Check that method goes always with R provided by the user
-  if ( ! missing( method ) & all( R == diag( 1, dim( X )[2] ) ) == T ){
+  if ( ! missing( method ) & all( R == diag( 1, dim( X )[2] ) ) == TRUE ){
     stop( "\nPlease provide a correlation matrix so that the
              method you have selected can be used\n" )
   }
@@ -332,17 +341,18 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
   if ( ! is.null( A ) & !inherits( A, "matrix" ) ){
     stop( "\nObject \"A\" needs to be of class \"matrix\"\n" )
   }
-    # [ DISABLED BY NOW. IT MIGHT BE TOO TIME CONSUMING WITH LARGE MATRICES ]
-    # [ IF MANY PEOPLE ARE USING THE WRONG A, WE WILL ENABLE THIS CHECK AGAIN ]
-    # Check that the A matrix provided is correct given their R
-    #A2 <- .CalcCholesky( R = R, n = dim( X )[2] )
-    #if ( A != A2 ){
-    #  stop( "\nYour \"A\" matrix does not seem to be the correct
-    #         one according the \"R\" matrix you have provied.
-    #         If you are unsure of properly calculating A, then
-    #         use write.morpho without this argument so it is
-    #         internally calculated\n" )
-    #}
+  
+  # [ DISABLED BY NOW. IT MIGHT BE TOO TIME CONSUMING WITH LARGE MATRICES ]
+  # [ IF MANY PEOPLE ARE USING THE WRONG A, WE WILL ENABLE THIS CHECK AGAIN ]
+  # Check that the A matrix provided is correct given their R
+  #A2 <- .CalcCholesky( R = R, n = dim( X )[2] )
+  #if ( A != A2 ){
+  #  stop( "\nYour \"A\" matrix does not seem to be the correct
+  #         one according the \"R\" matrix you have provied.
+  #         If you are unsure of properly calculating A, then
+  #         use write.morpho without this argument so it is
+  #         internally calculated\n" )
+  #}
 
 }
 
@@ -353,7 +363,9 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 
   # Check names is class "list" OR "character" and length(names) = dim(M)[1]
   if( ! missing( names ) ){
-    if ( class( names ) != "list" & class( names ) != "character" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if ( class( names ) != "list" & class( names ) != "character" ){
+    if ( is( names, "list" ) == FALSE & is( names, "character" ) == FALSE ){
       stop( "\nYou need to provide an object of class list or a character vector with the species included in the alignment file.
             E.g.1 species <- list( sp1 = \"sp1\", sp2 = \"sp2\" )
             E.g.2 species <- c(\"sp1\", \"sp2\")\n" )
@@ -366,7 +378,9 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 
   # Check ages is class "list" and length(ages) = dim(M)[1]
   if( ! missing( ages ) ){
-    if ( class( ages ) != "list" & class( ages ) != "numeric" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if ( class( ages ) != "list" & class( ages ) != "numeric" ){
+    if ( is( ages, "list" ) == FALSE & is( ages, "numeric" ) == FALSE ){
       stop( "\nYou need to provide an object of class list or a numeric vector with the ages of the species included in the alignment file.
             E.g.1 ages <- list( ag1 = 30, ag2 = 15
             E.g.2 ages <- c( 30, 15 )\n" )
@@ -383,7 +397,9 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 # Get ages if provided
 .hasAges <- function( ages, names ){
 
-  if ( class( ages ) == "list" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if ( class( ages ) == "list" ){
+  if ( is( ages, "list" ) == TRUE ){
     ages  <- unlist( ages )
   }
   names <- paste( names, - ages + max( ages ) + 0.01, sep = "^" ) # 0.01 = ct for MCMCtree
@@ -406,10 +422,19 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 
 # Get spaces and names vectors when names are not provided.
 # This wraps around .hasAges and .hasSpaces
-.notNames <- function( ages, s ){
-
-  # Name species as "Species_1", "Species_2", etc.
-  names <- paste( "Species_", seq( 1:s ), sep = "" )
+.notNames <- function( ages, s, M = NULL ){
+  
+  ## 250416-SAC: In case object `M` is not provided (e.g., using `sim.pop`),
+  ## specimen names will follow "Species_1", "Species_2", etc.
+  if( is.null( M ) == TRUE ){
+    names <- paste( "Species_", seq( 1:s ), sep = "" )
+  }else{
+    ## 250416-SAC: Adding "Species_[0-9]*" may be an undesired behaviour
+    ## for some uesrs. Instead, this setting has now been changed so that
+    ## the rownames from matrix `M` are used
+    #names <- paste( "Species_", seq( 1:s ), sep = "" )
+    names <- as.character( row.names( M ) )
+  }
 
   # If ages are not provided ...
   if ( missing(ages) ){
@@ -436,7 +461,9 @@ write.morpho <- function( M, filename, c = 0, R = diag( 1, dim( M )[2] ),
 .availNames <- function( names, ages ){
 
   # Get species names
-  if ( class( names ) == "list" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if ( class( names ) == "list" ){
+  if ( is( names, "list" ) == TRUE ){
     names   <- unlist( names )
   }
 
@@ -1095,7 +1122,9 @@ sim.morpho <- function( tree, n , c = 0, R, ... ) {
     stop( "\nPlease provide an object of class \"phylo\" with a phylogenetic tree\n" )
   }
 
-  if ( class( tree ) != "phylo" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if ( class( tree ) != "phylo" ){
+  if ( is( tree, "phylo" ) == FALSE ){
     stop( "\nPlease use an object of class \"phylo\" with a phylogenetic tree\n" )
   }
 
@@ -1116,7 +1145,9 @@ sim.morpho <- function( tree, n , c = 0, R, ... ) {
           morphological characters, n, or to a unique numeric value,
           which will assume that all variances equal to this value\n" )
   }
-  if( class( c ) != "numeric" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if( class( c ) != "numeric" ){
+  if( is( c, "numeric" ) == FALSE ){
     stop( "\nThe parameter \"c\" needs a numeric value > 0 or a numeric vector
           of length \"n\" with values > 0\n" )
   }
@@ -1387,7 +1418,10 @@ sim.pop <- function( psample, n, c, R ){
     stop( "\nPlease, provide a numerical value with the amount of
           specimens to be included in the population\n" )
   }
-  if( class( psample ) != "numeric" ){
+  
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if( class( psample ) != "numeric" ){
+  if( is( psample, "numeric" ) == FALSE ){
     stop( "\nPlease, provide a numerical value with the amount of
           specimens to be included in the population\n" )
   }
@@ -1409,7 +1443,9 @@ sim.pop <- function( psample, n, c, R ){
           morphological characters, n, or to a unique numeric value,
           which will assume that all variances equal to this value\n" )
   }
-  if( class( c ) != "numeric" ){
+  ## 250416-SAC: Use `is()` instead of conditional
+  #if( class( c ) != "numeric" ){
+  if( is( c, "numeric" ) == FALSE ){
     stop( "\nThe parameter \"c\" needs a numeric value > 0 or a numeric vector
           of length \"n\" with values > 0\n" )
   }
@@ -1581,7 +1617,8 @@ sim.pop <- function( psample, n, c, R ){
 #' }
 #' 
 #' @export
-proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords, method = c( "eigen", "chol" ), ages, ... ){
+proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename,
+                           coords, method = c( "eigen", "chol" ), ages, ... ){
 
   ## 240327-SAC: Add check for `Morpho` package
   # If Morpho package not available, stop and ask the user
@@ -1676,7 +1713,7 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
   # pop variances, R shrinkage matrix, and number of specimen from popdata
   # included in final morpho alignment
   return( list( dataPS = data.PS, popdataPS = P,
-          M = M, Rsh = R.sh, c = diag( cov( P ) ) ) )
+                M = M, Rsh = R.sh, c = diag( cov( P ) ) ) )
 
 }
 
@@ -1702,7 +1739,9 @@ proc2MCMCtree <- function( data, popdata, sp.data, sp.popdata, filename, coords,
       stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"data\"\n" )
     }
   }
-  if ( !inherits( popdata, "matrix" ) & class( popdata ) != "array" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if ( !inherits( popdata, "matrix" ) & class( popdata ) != "array" ){
+  if ( !inherits( popdata, "matrix" ) & is( popdata, "array" ) == FALSE ){
     stop( "\nPlease provide an object of class \"matrix\" or \"array\" for argument \"popdata\"\n" )
   }
 
@@ -2061,7 +2100,9 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
   if( missing( filename ) ){
     stop( "\nPlease, provide a name for the output control file\n" )
   }else{
-    if( class( filename ) != "character" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( class( filename ) != "character" ){
+    if( is( filename, "character" ) == FALSE ){
       stop( "\nPlease, provide a name for the output control file, class\"character\"\n" )
     }
   }
@@ -2073,7 +2114,9 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
             and beta values for the gamma prior for the substitution model
             parameter kappa (transition/transversion ratio)\n." )
     }else{
-      if( length( kappa_gamma ) != 2 | class( kappa_gamma ) != "numeric" ){
+      ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+      #if( length( kappa_gamma ) != 2 | class( kappa_gamma ) != "numeric" ){
+      if( length( kappa_gamma ) != 2 | is( kappa_gamma, "numeric" ) == FALSE ){
         stop( "\nPlease, provide alpha and beta values (vector length 2) to parameter \"kappa_gamma\"
               for the gamma prior for the substitution model parameter kappa\n" )
       }
@@ -2085,7 +2128,9 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
             parameter alpha (gamma shape parameter for variable rates among sites)\n." )
       
     }else{
-      if( length( alpha_gamma ) != 2 | class( alpha_gamma ) != "numeric" ){
+      ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+      #if( length( alpha_gamma ) != 2 | class( alpha_gamma ) != "numeric" ){
+      if( length( alpha_gamma ) != 2 | is( alpha_gamma, "numeric" ) == FALSE ){
         stop( "\nPlease, provide alpha and beta values (vector length 2) to paramter \"alpha_gamma\"
               for the gamma prior for the substitution model parameter alpha\n" )
       }
@@ -2095,7 +2140,9 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
       stop( "\nPlease, provide a value for the parameter \"alpha\" to set the gamma
             model of rate variation\n" )
     }else{
-      if( class( alpha ) != "numeric" | length( alpha ) != 1 ){
+      ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+      #if( class( alpha ) != "numeric" | length( alpha ) != 1 ){
+      if( is( alpha, "numeric" ) == FALSE | length( alpha ) != 1 ){
         stop( "\nPlease, provide a numeric value for the parameter \"alpha\" to set
               the discrete-gamma model of rate variation\n" )
       }
@@ -2121,29 +2168,37 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
     stop( "\nPlase, provide and odd or an even number for the seed.\n" )
   }
   
-  if( mcmcfile != "mcmc.txt" & class( mcmcfile ) != "character" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if( mcmcfile != "mcmc.txt" & class( mcmcfile ) != "character" ){
+  if( mcmcfile != "mcmc.txt" & is( mcmcfile, "character" ) == FALSE ){
     stop( "\nPlease, provide the path to the output \"mcmc.txt\" file,
           class \"character\".\n" )
   }
   
-  if( outfile != "out.txt" & class( mcmcfile ) != "character" ){
+  ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+  #if( outfile != "out.txt" & class( mcmcfile ) != "character" ){
+  if( outfile != "out.txt" & is( mcmcfile, "character" ) == FALSE ){
     stop( "\nPlease, provide the path to the output \"out.txt\" file,
           class \"character\".\n" )
   }
   
   if( missing( seqfile ) ){
-    stop( "\nPlease, provide the path to the alignment file\n.")
+    stop( "\nPlease, provide the path to the alignment file\n." )
   }else{
-    if( class( seqfile ) != "character" ){
-      stop( "\nPlease, provide the path to the alignment file, class \"character\"\n.")
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( class( seqfile ) != "character" ){
+    if( is( seqfile, "character" ) == FALSE ){
+      stop( "\nPlease, provide the path to the alignment file, class \"character\"\n." )
     }
   }
   
   if( missing( treefile ) ){
-    stop( "\nPlease, provide the path to the tree file\n.")
+    stop( "\nPlease, provide the path to the tree file\n." )
   }else{
-    if( class( treefile ) != "character" ){
-      stop( "\nPlease, provide the path to the tree file, class \"character\"\n.")
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( class( treefile ) != "character" ){
+    if( is( treefile, "character" ) == FALSE ){
+      stop( "\nPlease, provide the path to the tree file, class \"character\"\n." )
     }
   }
   
@@ -2171,7 +2226,7 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
       stop( "\nPlease, provide a numerical value to set the clock model.
             Values allowed: 1, 2, or 3.\n.")
     }
-    }
+  }
   
   if( missing( TipDate ) ){
     stop( "\nPlease, provide a numeric value to set the parameter \"TipDate\" with
@@ -2181,12 +2236,14 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
       stop( "\nPlease, provide a numeric value to set the parameter \"TipDate\" with
             a time unit\n" )
     }
-    }
+  }
   
   if( missing( RootAge ) ){
     stop( "\nPlease, provide a calibration for the root age.\n" )
   }else{
-    if( class( RootAge ) != "character" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( class( RootAge ) != "character" ){
+    if( is( RootAge, "character" ) == FALSE ){
       stop( "\nPlease, provide a calibration for the root age, class = \"character\".\n" )
     }
   }
@@ -2199,34 +2256,40 @@ ctlMCMCtree <- function( filename, mol = FALSE, seed = -1, seqfile, treefile, mc
     stop( "\nPlease, provide a vector with the values of the
           birth-death-sequential-sampling (BDSS) process\n")
   }else{
-    if( length( BDparas ) != 4 | class( BDparas ) != "numeric" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( length( BDparas ) != 4 | class( BDparas ) != "numeric" ){
+    if( length( BDparas ) != 4 | is( BDparas, "numeric" ) == FALSE ){
       stop( "\nPlease, provide a numeric vector with the values of the
             birth-death-sequential-sampling (BDSS) process. It needs
             a vector with four parameters: birth (lambda), death (mu),
             frequency to sample extant species (rho), and
             frequency to sample extinct species (psi).\n")
     }
-    }
+  }
   
   if( missing( rgene_gamma ) ){
     stop( "\nPlease, provide a vector with the alpha and beta parameters
           for the Dirichlet-gamma prior for the mean substitution rate.\n" )
   }else{
-    if( length( rgene_gamma ) != 2 | class( rgene_gamma ) != "numeric" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( length( rgene_gamma ) != 2 | class( rgene_gamma ) != "numeric" ){
+    if( length( rgene_gamma ) != 2 | is( rgene_gamma, "numeric" ) == FALSE ){
       stop( "\nPlease, provide a numeric vector with the alpha and beta parameters
             for the Dirichlet-gamma prior for the mean substitution rate.\n" )
     }
-    }
+  }
   
   if( missing( sigma2_gamma ) ){
     stop( "\nPlease, provide a vector with the alpha and beta parameters
           for the Dirichlet-gamma prior for the rate drift parameter.\n" )
   }else{
-    if( length( sigma2_gamma ) != 2 | class( sigma2_gamma ) != "numeric" ){
+    ## 250416-SAC: Use `is()` instead of conditional comparing `class()`
+    #if( length( sigma2_gamma ) != 2 | class( sigma2_gamma ) != "numeric" ){
+    if( length( sigma2_gamma ) != 2 | is( sigma2_gamma, "numeric" ) == FALSE ){
       stop( "\nPlease, provide a numeric vector with the alpha and beta parameters
             for the Dirichlet-gamma prior for the rate drift parameter.\n" )
     }
-    }
+  }
   
   if( print != 0 & print != 1 & print != 2 ){
     stop( "\nPlease, provide either 0, 1, or 2 to specify parameter \"print\"\n" )
@@ -2554,10 +2617,4 @@ lmk_imp <- function( path = NULL, lmk.names = FALSE ){
   return( arr )
 
 }
-
-
-
-
-
-
 

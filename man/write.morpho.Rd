@@ -78,7 +78,11 @@ e.g. from a simulated data set, the file should look like
 }
 
 Note that if a list with the specimens names is not passed to the parameter \code{names},
-the name for each species will be "Species_1", "Species_2", and so on.
+the name for each species will be obtained from the row names in object \code{M}.
+Please note that this feature has changed as of April 2025; tags as
+"Species_1", "Species_2", and so on would have been given instead. 
+Nevertheless, if you are using function \code{sim.pop} to simulate data,
+tags that follow notation "Species_X" will be used for specimens names.
 
 The object \code{c} can be of length 1, if all characters have the same variance, or
 a vector of length \code{n} with the variance of each of the characters. For the latter,
