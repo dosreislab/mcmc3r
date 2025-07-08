@@ -432,7 +432,7 @@ gauss.quad.boot <- function(R, betaf="beta.txt", preff="lnL") {
   lnLR <- numeric(R)
   
   lnLf <- paste(paste(preff, 0, ".txt", sep=""))
-  lnL0 <- stepping.stones(lnLf, betaf, FALSE)$logml
+  lnL0 <- lnL.fun(lnLf, betaf, FALSE)$logml
   
   for (j in 1:R) {
     lnLf <- paste(paste(preff, j, ".txt", sep=""))
