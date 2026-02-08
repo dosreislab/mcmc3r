@@ -49,8 +49,37 @@ back.ages = max(back.ages) - back.ages
 
 # reconstruct:
 recM1 <- mcmc2anc(carnivores$tree, M, carnivores$mcmc, "t_", "r_g1_", back.ages)
-recM2 <- mcmc2anc(carnivores$tree, M, carnivores$mcmc, "t_", "r_g1_", back.ages, carnivores$var.foxes, carnivores$R.sh)
+#recM2 <- mcmc2anc(carnivores$tree, M, carnivores$mcmc, "t_", "r_g1_", back.ages, carnivores$var.foxes, carnivores$R.sh)
 all.equal(recM1, recM2)
 plot(recM1, recM2); abline(0, 1)
 # This test confirmed that the reconstruction on the MCMC does not depend on the transform
 # This test does not work anymore as the option to give R.sh and c to the code is removed
+
+# ********************************************
+# Plot rates on tree
+# September 2025
+# ********************************************
+require(mcmc3r); rm(list=ls())
+
+data(carnivores)
+mcmc2densitree(carnivores$tree, carnivores$mcmc, "t_", thin=.01, alpha=.1)
+
+# calculate mean of morphological rates and log of morphological rates
+# morpho partition is the first one (g1)
+ri <- grep("r_g1_", names(carnivores$mcmc))
+rmean <- apply(carnivores$mcmc[,ri], 2, mean)
+rlog <- log(rmean)
+# histogram of rates
+hist(rlog)
+# based on the histogram, let's make four groups, "fast" rates, i.e., those
+# over zero in the histogram, "mid-fast" rates, those between -1 and 0, then
+# "mid-slow", thsoe between -2 and -1, and "slow", those less than -2
+# make color vector for rates:
+clrs <- rep("blue", length(rlog)) # slow
+clrs[rlog > -2] <- "green"        # mid-slow
+clrs[rlog > -1] <- "orange"       # mid-fast
+clrs[rlog > 0] <- "red"           # fast
+
+# plot densitree with branches coloured according to rate
+mcmc2densitree(carnivores$tree, carnivores$mcmc, "t_", col=clrs, thin=.01, alpha=.1)
+
