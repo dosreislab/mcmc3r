@@ -4,7 +4,14 @@
 \alias{lnL.app}
 \title{Calculate the approximate log-likelihood}
 \usage{
-lnL.app(b, b.mle, g.mle, H.mle, transform = c("NT", "SQRT", "ARCSIN"))
+lnL.app(
+  b,
+  b.mle,
+  g.mle,
+  H.mle,
+  transform = c("NT", "SQRT", "ARCSIN"),
+  type = c("nt", "aa", "co")
+)
 }
 \arguments{
 \item{b}{numeric, the branch length}
@@ -16,6 +23,8 @@ lnL.app(b, b.mle, g.mle, H.mle, transform = c("NT", "SQRT", "ARCSIN"))
 \item{H.mle}{numeric, the second derivative at the branch length MLE}
 
 \item{transform}{character, the transform to be used (see details)}
+
+\item{type}{character, the data type}
 }
 \description{
 Calculate the approximate log-likelihood
@@ -25,6 +34,10 @@ Calculates the approximate log-likelihood for two species using
   Taylor expansion of the log-likelihood around the maximum likelihood
   estimate (MLE) of the branch length, using the branch length transforms
   described in dos Reis and Yang (2011).
+
+  Note data type is required for correct calculation of the ARCSIN transform.
+  Data types are "nt" for nucleotide, "aa" for amino acid, and "co" for
+  codon.
 }
 \examples{
 # This reproduces Fig. 1 in dos Reis and Yang (2011):
@@ -60,6 +73,7 @@ curve(JC69.lnL(x, x., n) - lnL.max, from=0, to=.6, ylim=c(-50, 0), xlab="b", yla
 g <- JC69.g(1e-6, x., n); H <- JC69.H(1e-6, x., n)
 curve(lnL.app(x, 0, g, H, "NT"), lty=2, add=TRUE)
 curve(lnL.app(x, 0, g, H, "SQRT"), lty=2, add=TRUE)
+curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 
 # Case 2: MLE of b is between zero and infinity
 x. <- 37; n <- 100
@@ -68,6 +82,7 @@ g <- JC69.g(b, x., n); H <- JC69.H(b, x., n)
 curve(JC69.lnL(x, x., n) - lnL.max, from=0, to=2, ylim=c(-50, 0), xlab="b", ylab="lnL", las=1)
 curve(lnL.app(x, b, g, H, "NT"), lty=2, add=TRUE)
 curve(lnL.app(x, b, g, H, "SQRT"), lty=2, add=TRUE)
+curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 abline(v=b, lty=3)
 
 # Case 3: MLE of b is very large
@@ -77,6 +92,7 @@ curve(JC69.lnL(x, x., n) - lnL.max, from=0, to=4, ylim=c(-50, 0), xlab="b", ylab
 g <- JC69.g(b, x., n); H <- JC69.H(b, x., n)
 curve(lnL.app(x, b, g, H, "NT"), lty=2, add=TRUE)
 curve(lnL.app(x, b, g, H, "SQRT"), lty=2, add=TRUE)
+curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 abline(v=b, lty=3)
 
 }

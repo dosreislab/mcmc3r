@@ -5,11 +5,16 @@
 #' @param g.mle numeric, the gradient at the branch length MLE
 #' @param H.mle numeric, the second derivative at the branch length MLE
 #' @param transform character, the transform to be used (see details)
+#' @param type character, the data type
 #'
 #' @details Calculates the approximate log-likelihood for two species using
 #'   Taylor expansion of the log-likelihood around the maximum likelihood
 #'   estimate (MLE) of the branch length, using the branch length transforms
 #'   described in dos Reis and Yang (2011).
+#'
+#'   Note data type is required for correct calculation of the ARCSIN transform.
+#'   Data types are "nt" for nucleotide, "aa" for amino acid, and "co" for
+#'   codon.
 #'  
 #' @examples
 #' # This reproduces Fig. 1 in dos Reis and Yang (2011):
@@ -45,6 +50,7 @@
 #' g <- JC69.g(1e-6, x., n); H <- JC69.H(1e-6, x., n)
 #' curve(lnL.app(x, 0, g, H, "NT"), lty=2, add=TRUE)
 #' curve(lnL.app(x, 0, g, H, "SQRT"), lty=2, add=TRUE)
+#' curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 #' 
 #' # Case 2: MLE of b is between zero and infinity
 #' x. <- 37; n <- 100
@@ -53,6 +59,7 @@
 #' curve(JC69.lnL(x, x., n) - lnL.max, from=0, to=2, ylim=c(-50, 0), xlab="b", ylab="lnL", las=1)
 #' curve(lnL.app(x, b, g, H, "NT"), lty=2, add=TRUE)
 #' curve(lnL.app(x, b, g, H, "SQRT"), lty=2, add=TRUE)
+#' curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 #' abline(v=b, lty=3)
 #' 
 #' # Case 3: MLE of b is very large
@@ -62,6 +69,7 @@
 #' g <- JC69.g(b, x., n); H <- JC69.H(b, x., n)
 #' curve(lnL.app(x, b, g, H, "NT"), lty=2, add=TRUE)
 #' curve(lnL.app(x, b, g, H, "SQRT"), lty=2, add=TRUE)
+#' curve(lnL.app(x, b, g, H, "ARCSIN"), add=TRUE, lty=3)
 #' abline(v=b, lty=3)
 #'
 #' @references dos Reis and Yang (2011) Approximate likelihood calculation on a
@@ -69,19 +77,31 @@
 #' Biology and Evolution}, 28: 2161–2172.
 #'
 #' @export
-lnL.app <- function(b, b.mle, g.mle, H.mle, transform=c("NT", "SQRT", "ARCSIN")) {
+lnL.app <- function(b, b.mle, g.mle, H.mle, transform=c("NT", "SQRT", "ARCSIN"), 
+                    type=c("nt", "aa", "co")) {
   transform <- match.arg(transform)
   if (transform == "NT") {
+    
     u <- b; u.mle <- b.mle
     gu.mle <- g.mle; Hu.mle <- H.mle
+    
   } else if (transform == "SQRT") {
+  
     u <- sqrt(b); u.mle <- sqrt(b.mle)
     gu.mle <- 2 * g.mle * u.mle; Hu.mle <- 2 * g.mle + 4 * H.mle * b.mle
+  
   } else if (transform == "ARCSIN") {
-    u <- 2 * arcsin(sqrt(.pf(b))); u.mle <- 2 * arcsin(sqrt(.pf(b.mle)))
-    db.du <- cos(u.mle/2) * sin(u.mle/2) / (1 - 4 * sin(u.mle/2)^2 / 3)
-    d2b.du2 <- .5 * (cos(u.mle/2)^2 - sin(u.mle/2)^2) / (1 - 4 * sin(u.mle/2)^2 / 3) +
-      4 * cos(u.mle/2)^2 * sin(u.mle/2)^2 / (3 * (1 - 4 * sin(u.mle/2)^2 / 3))
+    
+    type <- match.arg(type)
+    
+    if (type == "nt") ft <- 3/4
+    else if (type == "aa") ft <- 19/20
+    else if (type == "co") co <- 60/61
+    
+    u <- 2 * asin(sqrt(.pf(b))); u.mle <- 2 * asin(sqrt(.pf(b.mle)))
+    db.du <- cos(u.mle/2) * sin(u.mle/2) / (1 - sin(u.mle/2)^2 / ft)
+    d2b.du2 <- .5 * (cos(u.mle/2)^2 - sin(u.mle/2)^2) / (1 - sin(u.mle/2)^2 / ft) +
+      cos(u.mle/2)^2 * sin(u.mle/2)^2 / (ft * (1 - sin(u.mle/2)^2 / ft))
     gu.mle <- g.mle * db.du
     Hu.mle <- g.mle * d2b.du2 + H.mle * db.du^2
   }
