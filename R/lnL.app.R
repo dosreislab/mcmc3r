@@ -98,7 +98,7 @@ lnL.app <- function(b, b.mle, g.mle, H.mle, transform=c("NT", "SQRT", "ARCSIN"),
     else if (type == "aa") ft <- 19/20
     else if (type == "co") co <- 60/61
     
-    u <- 2 * asin(sqrt(.pf(b))); u.mle <- 2 * asin(sqrt(.pf(b.mle)))
+    u <- 2 * asin(sqrt(.pf(b, ft))); u.mle <- 2 * asin(sqrt(.pf(b.mle, ft)))
     db.du <- cos(u.mle/2) * sin(u.mle/2) / (1 - sin(u.mle/2)^2 / ft)
     d2b.du2 <- .5 * (cos(u.mle/2)^2 - sin(u.mle/2)^2) / (1 - sin(u.mle/2)^2 / ft) +
       cos(u.mle/2)^2 * sin(u.mle/2)^2 / (ft * (1 - sin(u.mle/2)^2 / ft))
@@ -109,4 +109,4 @@ lnL.app <- function(b, b.mle, g.mle, H.mle, transform=c("NT", "SQRT", "ARCSIN"),
 }
 
 # Internal: calculate proportion of different sites given JC69 model
-.pf <- function(b.) .75 - .75 * exp(-4 * b. / 3)
+.pf <- function(b., ft) ft - ft * exp(-b. / ft)
